@@ -24,6 +24,15 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 // Handle user registration
+
+/*
+  take some data
+  validate the data
+  check if user already exists
+  saved the user to the database (AT, RT, GT, send email)
+  user verification email
+  send response back to the client
+*/
 const handleUserRegister = asyncHandler(async (req, res) => {
   const { email, password, username, fullName } = req.body;
 
@@ -40,6 +49,7 @@ const handleUserRegister = asyncHandler(async (req, res) => {
     password,
     username,
     fullName,
+    isEmailVerified: false,
   });
 
   const { unHashedToken, hashedToken, tokenExpiry } =
@@ -48,11 +58,32 @@ const handleUserRegister = asyncHandler(async (req, res) => {
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
 
-  await sendEmail();
+  await sendEmail({
+    email: user.email,
+    subject: "Please verify your email",
+    mailgenContent: emailVerificationMailgenContent(
+      user.username,
+      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+    ),
+  });
+
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken emailVerificationExpiry",
+  );
+
+  if (!createdUser) {
+    throw new ApiError(500, "Something went wrong whil registering a user");
+  }
 
   return res
     .status(201)
-    .json(new ApiResponse(201, user, "User registered successfully"));
+    .json(
+      new ApiResponse(
+        201,
+        { user: createdUser },
+        "User registered successfully and verification email has been sent on your email.",
+      ),
+    );
 });
 
 // Handle user login
@@ -118,10 +149,8 @@ const handleUserLogout = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   };
-  
-  res
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options);
+
+  res.clearCookie("accessToken", options).clearCookie("refreshToken", options);
 
   return res
     .status(200)
