@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { sendEmail } from "../utils/mail.js";
+import { emailVerificationMailgenContent } from "../utils/mail.js";
 
 // Generate access and refresh tokens for a user
 const generateAccessAndRefreshToken = async (userId) => {
@@ -68,11 +69,11 @@ const handleUserRegister = asyncHandler(async (req, res) => {
   });
 
   const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken -emailVerificationToken emailVerificationExpiry",
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
   );
 
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong whil registering a user");
+    throw new ApiError(500, "Something went wrong while registering a user");
   }
 
   return res

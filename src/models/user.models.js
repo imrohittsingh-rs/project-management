@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema(
         url: String,
         localPath: String,
       },
-      default: `https://placehold.co/200x200`,
+      default: {
+        url: "https://placehold.co/200x200",
+        localPath: "",
+      },
     },
     username: {
       type: String,
@@ -99,7 +102,7 @@ userSchema.methods.generateTemporaryToken = function () {
   const unHashedToken = crypto.randomBytes(20).toString("hex");
   const hashedToken = crypto
     .createHash("sha256")
-    .update(unHashedPassword)
+    .update(unHashedToken)
     .digest("hex");
   const tokenExpiry = Date.now() + 20 * 60 * 1000;
   return { unHashedToken, hashedToken, tokenExpiry };

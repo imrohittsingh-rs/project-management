@@ -22,18 +22,17 @@ const sendEmail = async function (options) {
     },
   });
 
-  const mail = await transporter.sendMail({
-    from: "mail.taskmanager@example.com",
-    to: options.email,
-    subject: options.subject,
-    text: emailTextual,
-    html: emailHtml,
-  });
-  
   try {
-    await transporter.sendMail(mail)
+    await transporter.sendMail({
+      from: "mail.taskmanager@example.com",
+      to: options.email,
+      subject: options.subject,
+      text: emailTextual,
+      html: emailHtml,
+    });
   } catch (error) {
-      console.error("Error while sending mail:", err);
+    console.error("Error while sending mail:", error);
+    throw error;
   }
 };
 
