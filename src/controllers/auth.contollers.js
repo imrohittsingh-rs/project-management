@@ -13,7 +13,7 @@ const generateAccessAndRefreshToken = async (userId) => {
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false }); // used when we want to save an existing document without running validation again, assuming that the document is already valid and we just want to update some fields.
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -146,13 +146,19 @@ const handleUserLogin = asyncHandler(async (req, res) => {
 });
 
 // Handle user logout
+
+/*
+  clear the refresh token from the database
+  clear the refresh token and access token from cookies
+  return a success message
+*/
 const handleUserLogout = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
       $set: { refreshToken: null },
     },
-    { new: true },
+    { new: true }, // return the updated document after the update operation is applied.
   );
 
   const options = {
@@ -160,7 +166,9 @@ const handleUserLogout = asyncHandler(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
   };
 
-  res.clearCookie("accessToken", options).clearCookie("refreshToken", options);
+  res
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options);
 
   return res
     .status(200)
