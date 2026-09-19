@@ -88,6 +88,15 @@ const handleUserRegister = asyncHandler(async (req, res) => {
 });
 
 // Handle user login
+
+/*
+  take some data
+  validate the data
+  check if user exists
+  check if password is correct
+  generate access and refresh tokens
+  send tokens in cookies
+*/
 const handleUserLogin = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 

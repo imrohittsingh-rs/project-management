@@ -6,7 +6,7 @@ import dns from "node:dns";
 // console.log(await dns.getServers());
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-dotenv.config();
+dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT || 8000;
 
