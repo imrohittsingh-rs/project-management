@@ -64,12 +64,14 @@ const handleUserRegister = asyncHandler(async (req, res) => {
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
 
+  await user.save({ validateBeforeSave: false });
+
   await sendEmail({
     email: user.email,
     subject: "Please verify your email",
     mailgenContent: emailVerificationMailgenContent(
       user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
     ),
   });
 
@@ -243,6 +245,7 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
 
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
+  await user.save({ validateBeforeSave: false });
 
   await sendEmail({
     email: user.email,
@@ -261,7 +264,8 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies?.refreshToken;
+  const incomingRefreshToken =
+    req.cookies?.refreshToken || req.body?.refreshToken;
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized Access.");
@@ -272,7 +276,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET,
     );
-    const user = await User.findById(decodedToken?.id);
+    const user = await User.findById(decodedToken?._id);
     if (!user) {
       throw new ApiError(401, "Invalid refresh token");
     }
@@ -282,10 +286,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     const { accessToken, refreshToken: newRefreshToken } =
-      user.generateAccessAndRefreshToken(user._id);
-
-    user.refreshToken = newRefreshToken;
-    await user.save({ validateBeforeSave: false });
+      await generateAccessAndRefreshToken(user._id);
 
     const options = {
       httpOnly: true,

@@ -33,7 +33,7 @@ router.post("/reset-password/:resetToken", userResetPasswordValidator(), validat
 
 // secured routes
 router.post("/logout", verifyJWT, handleUserLogout);
-router.post("/current-user", verifyJWT, getCurrentUser);
+router.get("/current-user", verifyJWT, getCurrentUser);
 router.post("/change-password", verifyJWT, userChangeCurrentPasswordValidator(), validate, changeCurrentPassword);
 router.post("/resend-verification-email", verifyJWT, resendEmailVerification);
 
