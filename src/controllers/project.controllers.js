@@ -65,11 +65,13 @@ const deleteProject = asyncHandler(async (req, res) => {
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await ProjectMember.aggregate([
     {
+      // 1. Get only current user's project memberships
       $match: {
         user: new mongoose.Types.ObjectId(req.user.id),
       },
     },
     {
+      // 2. Get the actual project
       $lookup: {
         from: "projects",
         localField: "project",
@@ -77,6 +79,7 @@ const getProjects = asyncHandler(async (req, res) => {
         as: "projects",
         pipeline: [
           {
+            // 3. Get all members in the project (it runs for each project in the projects array)
             $lookup: {
               from: "projectmembers",
               localField: "_id",
@@ -85,6 +88,7 @@ const getProjects = asyncHandler(async (req, res) => {
             },
           },
           {
+            // 4. Count the number of members in the project
             $addFields: {
               members: {
                 $size: "$projectmembers",
@@ -95,9 +99,11 @@ const getProjects = asyncHandler(async (req, res) => {
       },
     },
     {
+      // 5. Convert projects array into object
       $unwind: "$projects",
     },
     {
+      // 6. Select final fields
       $project: {
         project: {
           _id: 1,
@@ -118,7 +124,16 @@ const getProjects = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, projects, "Projects fetched successfully"));
 });
 
-const getProjectById = asyncHandler(async (req, res) => {});
+const getProjectById = asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
+  const project = await Project.findById(projectId);
+  if (!project) {
+    throw new ApiError(404, "Project not found");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, project, "Project fetched successfully"));
+});
 
 const addMembersToProject = asyncHandler(async (req, res) => {});
 
