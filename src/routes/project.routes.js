@@ -44,7 +44,6 @@ router
 router
   .route("/:projectId/members")
   .get(validateProjectPermission(AvailableUserRole), getProjectMembers)
-  .put(validateProjectPermission([UserRoleEnum.ADMIN]), updateMemberRole)
   .post(
     validateProjectPermission([UserRoleEnum.ADMIN]),
     addMemberToProjectValidator(),

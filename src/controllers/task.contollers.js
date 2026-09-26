@@ -74,17 +74,17 @@ const getTaskById = asyncHandler(async (req, res) => {
         localField: "assignedTo",
         foreignField: "_id",
         as: "assignedTo",
-      },
-      pipeline: [
-        {
-          $project: {
-            _id: 1,
-            username: 1,
-            fullName: 1,
-            avatar: 1,
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
           },
-        },
-      ],
+        ],
+      },
     },
     // 3. Lookup the subtasks for the task and their assignedTo user details
     {
@@ -93,32 +93,32 @@ const getTaskById = asyncHandler(async (req, res) => {
         localField: "_id",
         foreignField: "task",
         as: "subtasks",
-      },
-      pipeline: [
-        {
-          $lookup: {
-            from: "users",
-            localField: "createdBy",
-            foreignField: "_id",
-            as: "createdBy",
-            pipeline: [
-              {
-                $project: {
-                  _id: 1,
-                  username: 1,
-                  fullName: 1,
-                  avatar: 1,
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "createdBy",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                  },
                 },
-              },
-            ],
+              ],
+            },
           },
-        },
-        {
-          $addFields: {
-            createdBy: { $arrayElemAt: ["$createdBy", 0] },
+          {
+            $addFields: {
+              createdBy: { $arrayElemAt: ["$createdBy", 0] },
+            },
           },
-        },
-      ],
+        ],
+      },
     },
     {
       $addFields: {
