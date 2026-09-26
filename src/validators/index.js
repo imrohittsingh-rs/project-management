@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { AvailableUserRole } from "../utils/constants";
+import { AvailableTaskStatus, AvailableUserRole } from "../utils/constants.js";
 
 const userRegisterValidator = () => {
   return [
@@ -151,21 +151,21 @@ const createSubTaskValidator = () => {
       .withMessage("Sub-task title is required")
       .isLength({ min: 3, max: 100 })
       .withMessage("Sub-task title must be between 3 and 100 characters"),
-    body("description")
+  ];
+};
+
+const updateSubTaskValidator = () => {
+  return [
+    body("title")
+      .optional()
       .trim()
+      .isLength({ min: 3, max: 100 })
+      .withMessage("Sub-task title must be between 3 and 100 characters"),
+    body("isCompleted")
       .optional()
-      .isLength({ max: 500 })
-      .withMessage("Sub-task description must be less than 500 characters"),
-    body("assignedTo")
-      .optional()
-      .isMongoId()
-      .withMessage("Invalid assignedTo ID"),
-    body("status")
-      .optional()
-      .isIn(AvailableTaskStatus)
-      .withMessage(
-        `Status must be one of the following: ${AvailableTaskStatus.join(", ")}`,
-      ),
+      .isBoolean()
+      .withMessage("isCompleted must be a boolean")
+      .toBoolean(),
   ];
 };
 
@@ -179,4 +179,5 @@ export {
   addMemberToProjectValidator,
   createTaskValidator,
   createSubTaskValidator,
+  updateSubTaskValidator,
 };
