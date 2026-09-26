@@ -117,6 +117,58 @@ const addMemberToProjectValidator = () => {
   ];
 };
 
+const createTaskValidator = () => {
+  return [
+    body("title")
+      .trim()
+      .notEmpty()
+      .withMessage("Task title is required")
+      .isLength({ min: 3, max: 100 })
+      .withMessage("Task title must be between 3 and 100 characters"),
+    body("description")
+      .trim()
+      .optional()
+      .isLength({ max: 500 })
+      .withMessage("Task description must be less than 500 characters"),
+    body("assignedTo")
+      .optional()
+      .isMongoId()
+      .withMessage("Invalid assignedTo ID"),
+    body("status")
+      .optional()
+      .isIn(AvailableTaskStatus)
+      .withMessage(
+        `Status must be one of the following: ${AvailableTaskStatus.join(", ")}`,
+      ),
+  ];
+};
+
+const createSubTaskValidator = () => {
+  return [
+    body("title")
+      .trim()
+      .notEmpty()
+      .withMessage("Sub-task title is required")
+      .isLength({ min: 3, max: 100 })
+      .withMessage("Sub-task title must be between 3 and 100 characters"),
+    body("description")
+      .trim()
+      .optional()
+      .isLength({ max: 500 })
+      .withMessage("Sub-task description must be less than 500 characters"),
+    body("assignedTo")
+      .optional()
+      .isMongoId()
+      .withMessage("Invalid assignedTo ID"),
+    body("status")
+      .optional()
+      .isIn(AvailableTaskStatus)
+      .withMessage(
+        `Status must be one of the following: ${AvailableTaskStatus.join(", ")}`,
+      ),
+  ];
+};
+
 export {
   userRegisterValidator,
   userLoginValidator,
@@ -125,4 +177,6 @@ export {
   userResetPasswordValidator,
   createProjectValidator,
   addMemberToProjectValidator,
+  createTaskValidator,
+  createSubTaskValidator,
 };
