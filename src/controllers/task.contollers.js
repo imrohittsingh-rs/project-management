@@ -5,6 +5,7 @@ import { Subtask } from "../models/subtask.model.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import { UserRoleEnum } from "../utils/constants.js";
 import mongoose from "mongoose";
 
 const getTasks = asyncHandler(async (req, res) => {
@@ -57,12 +58,13 @@ const createTask = asyncHandler(async (req, res) => {
 });
 
 const getTaskById = asyncHandler(async (req, res) => {
-  const { taskId } = req.params;
+  const { projectId, taskId } = req.params;
   const task = await Task.aggregate([
     // 1. Match the task by ID
     {
       $match: {
         _id: new mongoose.Types.ObjectId(taskId),
+        project: new mongoose.Types.ObjectId(projectId),
       },
     },
     // 2. Lookup the assignedTo user details
@@ -96,7 +98,7 @@ const getTaskById = asyncHandler(async (req, res) => {
         {
           $lookup: {
             from: "users",
-            localField: "assignedTo",
+            localField: "createdBy",
             foreignField: "_id",
             as: "createdBy",
             pipeline: [
@@ -135,11 +137,11 @@ const getTaskById = asyncHandler(async (req, res) => {
 });
 
 const updateTask = asyncHandler(async (req, res) => {
-  const { taskId } = req.params;
+  const { projectId, taskId } = req.params;
   const { title, description, assignedTo, status } = req.body;
 
   const task = await Task.findByIdAndUpdate(
-    taskId,
+    { _id: taskId, project: projectId },
     {
       title,
       description,
@@ -159,8 +161,11 @@ const updateTask = asyncHandler(async (req, res) => {
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
-  const { taskId } = req.params;
-  const task = await Task.findByIdAndDelete(taskId);
+  const { projectId, taskId } = req.params;
+  const task = await Task.findOneAndDelete({
+    _id: taskId,
+    project: projectId,
+  });
 
   if (!task) {
     throw new ApiError(404, "Task not found");
@@ -173,7 +178,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
 const createSubTask = asyncHandler(async (req, res) => {
   const { projectId, taskId } = req.params;
-  const { title, description, assignedTo, status } = req.body;
+  const { title } = req.body;
 
   const project = await Project.findById(projectId);
   if (!project) {
@@ -190,12 +195,8 @@ const createSubTask = asyncHandler(async (req, res) => {
 
   const subtask = await Subtask.create({
     title,
-    description,
-    assignedTo: assignedTo ? new mongoose.Types.ObjectId(assignedTo) : null,
-    assignedBy: new mongoose.Types.ObjectId(req.user._id),
-    status,
-    project: new mongoose.Types.ObjectId(projectId),
     task: new mongoose.Types.ObjectId(taskId),
+    createdBy: new mongoose.Types.ObjectId(req.user._id),
   });
 
   return res
@@ -205,24 +206,46 @@ const createSubTask = asyncHandler(async (req, res) => {
 
 const updateSubTask = asyncHandler(async (req, res) => {
   const { projectId, subTaskId } = req.params;
-  const { title, description, assignedTo, status } = req.body;
+  const { title, isCompleted } = req.body;
 
   const project = await Project.findById(projectId);
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
 
+  const updates = {};
+  if (req.user.role === UserRoleEnum.MEMBER) {
+    // Members cannot update the title
+    if (title !== undefined) {
+      throw new ApiError(403, "Members can only update subtask completion");
+    }
+    if (isCompleted !== undefined) updates.isCompleted = isCompleted;
+  } else {
+    // Admin or Project Admin can update both title and isCompleted
+    if (title !== undefined) updates.title = title;
+    if (isCompleted !== undefined) updates.isCompleted = isCompleted;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    throw new ApiError(400, "At least one subtask field is required");
+  }
+
+  const existingSubtask = await Subtask.findById(subTaskId);
+  if (!existingSubtask) {
+    throw new ApiError(404, "Subtask not found");
+  }
+
+  const task = await Task.findOne({
+    _id: existingSubtask.task,
+    project: new mongoose.Types.ObjectId(projectId),
+  });
+  if (!task) {
+    throw new ApiError(404, "Subtask not found");
+  }
+
   const subtask = await Subtask.findOneAndUpdate(
-    {
-      _id: subTaskId,
-      project: new mongoose.Types.ObjectId(projectId),
-    },
-    {
-      title,
-      description,
-      assignedTo: assignedTo ? new mongoose.Types.ObjectId(assignedTo) : null,
-      status,
-    },
+    { _id: existingSubtask._id, task: task._id },
+    updates,
     { new: true },
   );
 
@@ -243,9 +266,22 @@ const deleteSubTask = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found");
   }
 
-  const subtask = await Subtask.findOneAndDelete({
-    _id: subTaskId,
+  const existingSubtask = await Subtask.findById(subTaskId);
+  if (!existingSubtask) {
+    throw new ApiError(404, "Subtask not found");
+  }
+
+  const task = await Task.findOne({
+    _id: existingSubtask.task,
     project: new mongoose.Types.ObjectId(projectId),
+  });
+  if (!task) {
+    throw new ApiError(404, "Subtask not found");
+  }
+
+  const subtask = await Subtask.findOneAndDelete({
+    _id: existingSubtask._id,
+    task: task._id,
   });
 
   if (!subtask) {
