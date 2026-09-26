@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { ApiError } from "../utils/api-error.js";
 import { User } from "../models/user.models.js";
 import { ProjectMember } from "../models/projectmember.models.js";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
@@ -57,4 +58,6 @@ export const validateProjectPermission = (roles = []) =>
         "You do not have permission to perform this action",
       );
     }
+
+    next();
   });
