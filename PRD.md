@@ -178,3 +178,66 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 - File attachment capability for enhanced collaboration
 - Email notification system for user verification and password reset
 - Comprehensive API documentation through endpoint structure
+
+### 8. Data Model Relationships
+
+```mermaid
+erDiagram
+	USER ||--o{ PROJECT_MEMBER : joins
+	PROJECT ||--o{ PROJECT_MEMBER : has
+	USER ||--o{ PROJECT : creates
+	PROJECT ||--o{ TASK : contains
+	USER ||--o{ TASK : assigned_to
+	USER ||--o{ TASK : assigned_by
+	TASK ||--o{ SUBTASK : contains
+	USER ||--o{ SUBTASK : creates
+	PROJECT ||--o{ NOTE : contains
+	USER ||--o{ NOTE : creates
+
+	USER {
+		ObjectId _id PK
+		string username UK
+		string email UK
+		string fullName
+		boolean isEmailVerified
+	}
+
+	PROJECT {
+		ObjectId _id PK
+		string name UK
+		string description
+		ObjectId createdBy FK
+	}
+
+	PROJECT_MEMBER {
+		ObjectId _id PK
+		ObjectId user FK
+		ObjectId project FK
+		string role
+	}
+
+	TASK {
+		ObjectId _id PK
+		string title
+		string description
+		ObjectId project FK
+		ObjectId assignedTo FK
+		ObjectId assignedBy FK
+		string status
+	}
+
+	SUBTASK {
+		ObjectId _id PK
+		string title
+		ObjectId task FK
+		ObjectId createdBy FK
+		boolean isCompleted
+	}
+
+	NOTE {
+		ObjectId _id PK
+		ObjectId project FK
+		ObjectId createdBy FK
+		string content
+	}
+```
