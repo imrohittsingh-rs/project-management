@@ -41,6 +41,12 @@ const generateAccessAndRefreshToken = async (userId) => {
 */
 const handleUserRegister = asyncHandler(async (req, res) => {
   const { email, password, username, fullName } = req.body;
+  const avatar = req.file
+    ? {
+        url: `${process.env.SERVER_URL}/images/${req.file.filename}`,
+        localPath: req.file.path,
+      }
+    : undefined;
 
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
@@ -55,6 +61,7 @@ const handleUserRegister = asyncHandler(async (req, res) => {
     password,
     username,
     fullName,
+    avatar,
     isEmailVerified: false,
   });
 
