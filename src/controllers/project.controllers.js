@@ -65,13 +65,13 @@ const deleteProject = asyncHandler(async (req, res) => {
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await ProjectMember.aggregate([
     {
-      // 1. Get only current user's project memberships
+      // 1. Find the current user’s project memberships
       $match: {
         user: new mongoose.Types.ObjectId(req.user.id),
       },
     },
     {
-      // 2. Get the actual project
+      // 2. Find the related project
       $lookup: {
         from: "projects",
         localField: "project",
@@ -106,12 +106,12 @@ const getProjects = asyncHandler(async (req, res) => {
       // 6. Select final fields
       $project: {
         project: {
-          _id: 1,
-          name: 1,
-          description: 1,
-          members: 1,
-          createdBy: 1,
-          createdAt: 1,
+          _id: "$projects._id",
+          name: "$projects.name",
+          description: "$projects.description",
+          members: "$projects.members",
+          createdBy: "$projects.createdBy",
+          createdAt: "$projects.createdAt",
         },
         role: 1,
         _id: 0,
@@ -263,7 +263,7 @@ const updateMemberRole = asyncHandler(async (req, res) => {
 
 const deleteMember = asyncHandler(async (req, res) => {
   const { projectId, userId } = req.params;
-  
+
   const projectMember = await ProjectMember.findOneAndDelete(
     {
       user: new mongoose.Types.ObjectId(userId),

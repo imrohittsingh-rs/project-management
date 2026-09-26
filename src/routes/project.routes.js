@@ -43,7 +43,7 @@ router
 
 router
   .route("/:projectId/members")
-  .get(getProjectMembers)
+  .get(validateProjectPermission(AvailableUserRole), getProjectMembers)
   .put(validateProjectPermission([UserRoleEnum.ADMIN]), updateMemberRole)
   .post(
     validateProjectPermission([UserRoleEnum.ADMIN]),
@@ -54,7 +54,7 @@ router
 
 router
   .route("/:projectId/members/:userId")
-  .put(validateProjectPermission([UserRoleEnum.ADMIN]), getProjectMembers)
+  .put(validateProjectPermission([UserRoleEnum.ADMIN]), updateMemberRole)
   .delete(validateProjectPermission([UserRoleEnum.ADMIN]), deleteMember);
 
 export default router;

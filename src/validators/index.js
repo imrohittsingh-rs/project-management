@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, oneOf } from "express-validator";
 import { AvailableTaskStatus, AvailableUserRole } from "../utils/constants.js";
 
 const userRegisterValidator = () => {
@@ -34,14 +34,25 @@ const userRegisterValidator = () => {
 
 const userLoginValidator = () => {
   return [
-    body("username").trim().notEmpty().withMessage("Username is required"),
-    body("email")
+    oneOf(
+      [
+        body("username").optional().trim().notEmpty(),
+        body("email").optional().trim().isEmail(),
+      ],
+      { message: "A username or valid email is required" },
+    ),
+    body("password").trim().notEmpty().withMessage("Password is required"),
+  ];
+};
+
+const createNoteValidator = () => {
+  return [
+    body("content")
       .trim()
       .notEmpty()
-      .withMessage("Email is required")
-      .isEmail()
-      .withMessage("Invalid email address"),
-    body("password").trim().notEmpty().withMessage("Password is required"),
+      .withMessage("Note content is required")
+      .isLength({ max: 5000 })
+      .withMessage("Note content must be less than 5000 characters"),
   ];
 };
 
@@ -180,4 +191,5 @@ export {
   createTaskValidator,
   createSubTaskValidator,
   updateSubTaskValidator,
+  createNoteValidator,
 };
