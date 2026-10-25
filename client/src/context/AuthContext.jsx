@@ -20,6 +20,7 @@ import {
 
 const AuthContext = createContext(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const response = await getCurrentUserService();
                 setUser(response?.data?.user);
-            } catch (error) {
+            } catch {
                 setUser(null);
             }finally{
                 setLoading(false);
@@ -47,7 +48,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (userData) => {
         const response = await loginService(userData);
-        const loggedInUser = setUser(response?.data?.user);
+        const loggedInUser = response?.data?.user;
+        setUser(loggedInUser);
         return loggedInUser;
     }
 
@@ -58,7 +60,8 @@ export const AuthProvider = ({ children }) => {
 
     const getCurrentUser = async () => {
         const response = await getCurrentUserService();
-        const currentUser = setUser(response?.data?.user);
+        const currentUser = response?.data?.user;
+        setUser(currentUser);
         return currentUser;
     }
 

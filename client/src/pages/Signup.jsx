@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FiUser,
   FiAtSign,
@@ -13,13 +14,13 @@ import {
 } from "react-icons/fi";
 import { FaCircleCheck } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext.jsx";
-import { toast } from "react-toastify";
 
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function Signup({ onNavigateToLogin }) {
+export default function Signup() {
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -75,6 +76,8 @@ export default function Signup({ onNavigateToLogin }) {
     special: /[^A-Za-z0-9]/.test(formData.password)
   };
 
+  const isPasswordValid = Object.values(checks).every(Boolean);
+
   // Field validation rules
   const errors = {
     fullName:
@@ -100,8 +103,8 @@ export default function Signup({ onNavigateToLogin }) {
     password:
       touched.password && (!formData.password
         ? "Password is required"
-        : formData.password.length < 8
-        ? "Password must be at least 8 characters"
+        : !isPasswordValid
+        ? "Please satisfy all password requirements."
         : null),
     confirmPassword:
       touched.confirmPassword && (!formData.confirmPassword
@@ -115,7 +118,7 @@ export default function Signup({ onNavigateToLogin }) {
     formData.fullName.trim().length >= 3 &&
     USERNAME_REGEX.test(formData.username) &&
     EMAIL_REGEX.test(formData.email.trim()) &&
-    formData.password.length >= 8 &&
+    isPasswordValid &&
     formData.password === formData.confirmPassword;
 
   const handleSubmit = async (e) => {
@@ -146,7 +149,6 @@ export default function Signup({ onNavigateToLogin }) {
       };
 
       const response = await register(payload);
-      toast.success(response?.message || "Registration successful! Please check your email.");
 
       setSuccessData({
         email: payload.email,
@@ -162,18 +164,13 @@ export default function Signup({ onNavigateToLogin }) {
         err?.message ||
         "An unexpected error occurred during registration. Please try again.";
       setServerError(message);
-      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleGoToLogin = () => {
-    if (typeof onNavigateToLogin === "function") {
-      onNavigateToLogin();
-    } else {
-      window.location.href = "/login";
-    }
+    navigate("/login");
   };
 
   // Success state: Verification email sent
@@ -524,13 +521,12 @@ export default function Signup({ onNavigateToLogin }) {
         <div className="mt-6 pt-5 border-t border-[#ebebeb] text-center">
           <p className="text-sm text-[#4d4d4d]">
             Already have an account?{" "}
-            <button
-              type="button"
-              onClick={handleGoToLogin}
+            <Link
+              to="/login"
               className="font-medium text-[#0070f3] hover:text-[#0761d1] transition-colors cursor-pointer bg-transparent border-none p-0 inline"
             >
               Sign in
-            </button>
+            </Link>
           </p>
         </div>
       </div>
