@@ -44,8 +44,10 @@ const Hero = () => {
           setTaskPrompt((prev) => prev.slice(0, -1));
         }, 18);
       } else {
-        setIsDeleting(false);
-        setCurrentPromptIndex((prev) => (prev + 1) % samplePrompts.length);
+        timer = setTimeout(() => {
+          setIsDeleting(false);
+          setCurrentPromptIndex((prev) => (prev + 1) % samplePrompts.length);
+        }, 400);
       }
     }
 
@@ -66,20 +68,19 @@ const Hero = () => {
 
         {/* Sub-headline */}
         <p className="mt-6 text-sm sm:text-base md:text-[17px] text-[#4d4d4d] max-w-2xl mx-auto leading-relaxed">
-          Task tracking, sprint pipelines, and engineering notes in one unified workspace.
+          Manage projects, subtasks, and team notes in one workspace.
           <br className="hidden sm:inline" />
-          Engineered for velocity, not administrative overhead.
+          Built for teams that ship.
         </p>
 
         {/* Action CTAs */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="#demo"
-            id="hero-book-demo-btn"
+          <Link
+            to="/how-it-works"
             className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-md shadow-2xs transition-all"
           >
             Explore Platform
-          </a>
+          </Link>
           <Link
             to="/signup"
             id="hero-signup-btn"

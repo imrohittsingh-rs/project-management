@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiUser,
@@ -18,8 +18,14 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 
 export default function Login() {
-  const { login, forgotPassword } = useAuth();
+  const { user, login, forgotPassword } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -115,7 +121,7 @@ export default function Login() {
       };
 
       await login(payload);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       const message =
         err?.response?.data?.message ||

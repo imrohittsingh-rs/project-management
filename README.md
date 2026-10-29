@@ -1,4 +1,4 @@
-# Project Camp Backend API
+# Projectub Backend API
 
 A RESTful backend API service engineered for collaborative project management. Built with Node.js, Express 5, and MongoDB with Mongoose, the system provides project workflows, hierarchical task and subtask tracking, project notes, multi-file attachments, and role-based access control (RBAC) backed by JWT authentication and automated email workflows.
 
@@ -27,7 +27,7 @@ A RESTful backend API service engineered for collaborative project management. B
 
 ## Overview
 
-Project Camp Backend delivers the server-side infrastructure for project management tools:
+Projectub Backend delivers the server-side infrastructure for project management tools:
 - **Authentication & Security:** User registration with avatar upload, email verification tokens via Mailtrap, JWT authentication (access and refresh tokens via httpOnly cookies or Authorization headers), and password reset flows.
 - **Projects:** Creation, updates, deletions, and aggregation-driven member listings with computed member counts.
 - **Team Collaboration:** Project member invitations by email with granular roles (`admin`, `project_admin`, `member`).
