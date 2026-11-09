@@ -5,9 +5,10 @@ import {
   FiX,
   FiUser,
   FiLogOut,
-  FiGrid,
-  FiChevronDown,
-  FiPlus
+  FiCheck,
+  FiCreditCard,
+  FiSettings,
+  FiFileText,
 } from 'react-icons/fi';
 import logo from "../assets/logo.png";
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,8 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const isVerified = Boolean(user?.isEmailVerified);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -93,87 +96,114 @@ const Navbar = () => {
         <div className="hidden md:flex items-center space-x-3">
           {user ? (
             <div className="relative" ref={dropdownRef}>
+              {/* Trigger Button: User Name + Email on Left, Avatar on Right */}
               <button
                 type="button"
                 onClick={() => setProfileDropdownOpen((prev) => !prev)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-[#ebebeb] bg-white hover:border-[#d4d4d4] hover:bg-[#fafafa] transition-all text-[#171717] cursor-pointer focus:outline-none focus:ring-2 focus:ring-black/5"
+                className="flex items-center gap-2.5 py-1 px-1 text-[#171717] hover:opacity-90 transition-opacity cursor-pointer focus:outline-none"
                 aria-expanded={profileDropdownOpen}
                 aria-haspopup="true"
                 id="profile-menu-button"
               >
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.fullName || user.username}
-                    className="w-7 h-7 rounded-full object-cover border border-[#ebebeb]"
-                  />
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-[#171717] text-white flex items-center justify-center text-xs font-semibold tracking-wide">
-                    {getInitials()}
+
+                {/* Avatar with Verified / Unverified Ring & Badge on the Right */}
+                <div className="relative shrink-0">
+                  <div
+                    className={`w-8 h-8 rounded-full overflow-hidden p-[1.5px] transition-all ${
+                      isVerified
+                        ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
+                        : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
+                    }`}
+                  >
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.fullName || user.username}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-[#171717] text-white flex items-center justify-center text-[11px] font-semibold tracking-wide">
+                        {getInitials()}
+                      </div>
+                    )}
                   </div>
-                )}
-                <span className="text-xs font-medium text-[#171717] max-w-[120px] truncate">
-                  {user.fullName || user.username}
-                </span>
-                <FiChevronDown
-                  className={`w-3.5 h-3.5 text-[#8f8f8f] transition-transform duration-150 ${
-                    profileDropdownOpen ? "rotate-180" : ""
-                  }`}
-                />
+
+                  {/* Verification Status Badge */}
+                  {isVerified ? (
+                    <div
+                      title="Email verified"
+                      className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#0d9488] border-[1.5px] border-white flex items-center justify-center shadow-xs"
+                    >
+                      <FiCheck className="w-2 h-2 text-white stroke-[3.5]" />
+                    </div>
+                  ) : (
+                    <div
+                      title="Email not verified"
+                      className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-500 border-[1.5px] border-white flex items-center justify-center shadow-xs"
+                    >
+                      <span className="text-[8px] font-bold text-white leading-none">!</span>
+                    </div>
+                  )}
+                </div>
               </button>
 
-              {/* Profile Dropdown Menu */}
+              {/* Profile Dropdown Menu - Kokonut UI Two-Card Layout */}
               {profileDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 bg-white border border-[#ebebeb] rounded-lg shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  className="absolute right-0 mt-2.5 w-[280px] z-50 flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 duration-150"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="profile-menu-button"
                 >
-                  {/* User info card */}
-                  <div className="px-3.5 py-2.5 border-b border-[#f2f2f2]">
-                    <p className="text-xs font-semibold text-[#171717] truncate">
-                      {user.fullName || user.username}
-                    </p>
-                    <p className="text-[11px] text-[#8f8f8f] truncate mt-0.5">
-                      {user.email}
-                    </p>
-                  </div>
-
-                  <div className="py-1">
+                  {/* Bottom Card: Menu Actions */}
+                  <div className="bg-white border border-[#e5e5e7] rounded-2xl p-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.08)] flex flex-col gap-1">
+                    {/* 1. Profile */}
                     <Link
-                      to="/dashboard"
+                      to="/profile"
                       onClick={() => setProfileDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#4d4d4d] hover:text-[#171717] hover:bg-[#fafafa] transition-colors"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#f4f4f5] text-sm text-[#18181b] font-medium transition-colors"
                       role="menuitem"
                     >
-                      <FiGrid className="w-4 h-4 text-[#8f8f8f]" />
-                      <span>Dashboard</span>
+                      <FiUser className="w-4 h-4 text-[#18181b]" />
+                      <span>Profile</span>
                     </Link>
 
+                    {/* 3. Subscription */}
                     <Link
-                      to="/dashboard"
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#4d4d4d] hover:text-[#171717] hover:bg-[#fafafa] transition-colors"
+                      to="/pricing"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#f4f4f5] text-sm text-[#18181b] font-medium transition-colors"
                       role="menuitem"
                     >
-                      <FiPlus className="w-4 h-4 text-[#8f8f8f]" />
-                      <span>Projects</span>
+                      <div className="flex items-center gap-3">
+                        <FiCreditCard className="w-4 h-4 text-[#18181b]" />
+                        <span>Subscription</span>
+                      </div>
                     </Link>
-                  </div>
 
-                  <div className="border-t border-[#f2f2f2] pt-1 mt-1">
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#ee0000] hover:bg-[#fff5f5] transition-colors text-left cursor-pointer"
+                    {/* 4. Settings */}
+                    <Link
+                      to="/profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#f4f4f5] text-sm text-[#18181b] font-medium transition-colors"
                       role="menuitem"
                     >
-                      <FiLogOut className="w-4 h-4 text-[#ee0000]" />
-                      <span>Log Out</span>
-                    </button>
+                      <FiSettings className="w-4 h-4 text-[#18181b]" />
+                      <span>Settings</span>
+                    </Link>
+
+                    {/* 6. Sign Out Button */}
+                    <div className="pt-1.5 mt-1 border-t border-[#f4f4f5]">
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#fee2e2]/60 hover:bg-[#fee2e2] text-[#ef4444] text-sm font-medium transition-colors cursor-pointer text-left"
+                        role="menuitem"
+                      >
+                        <FiLogOut className="w-4 h-4 text-[#ef4444]" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -215,13 +245,48 @@ const Navbar = () => {
           {/* User profile banner on mobile */}
           {user && (
             <div className="flex items-center gap-3 p-3 bg-[#fafafa] border border-[#ebebeb] rounded-lg mb-2">
-              <div className="w-9 h-9 rounded-full bg-[#171717] text-white flex items-center justify-center text-xs font-semibold">
-                {getInitials()}
+              <div className="relative shrink-0">
+                <div
+                  className={`w-9 h-9 rounded-full overflow-hidden p-[2px] transition-all ${
+                    isVerified
+                      ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
+                      : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
+                  }`}
+                >
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.fullName || user.username}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-[#171717] text-white flex items-center justify-center text-xs font-semibold">
+                      {getInitials()}
+                    </div>
+                  )}
+                </div>
+                {isVerified ? (
+                  <div
+                    title="Email verified"
+                    className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#0d9488] border-2 border-white flex items-center justify-center shadow-xs"
+                  >
+                    <FiCheck className="w-2.5 h-2.5 text-white stroke-[3.5]" />
+                  </div>
+                ) : (
+                  <div
+                    title="Email not verified"
+                    className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center shadow-xs"
+                  >
+                    <span className="text-[9px] font-bold text-white leading-none">!</span>
+                  </div>
+                )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-[#171717] truncate">
-                  {user.fullName || user.username}
-                </p>
+                <div className="flex items-center justify-between gap-1">
+                  <p className="text-xs font-semibold text-[#171717] truncate">
+                    {user.fullName || user.username}
+                  </p>
+                </div>
                 <p className="text-[11px] text-[#8f8f8f] truncate">{user.email}</p>
               </div>
             </div>
@@ -229,14 +294,35 @@ const Navbar = () => {
 
           <div className="space-y-1">
             {user && (
-              <Link
-                to="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 text-xs uppercase font-medium tracking-wide text-[#171717] bg-black/[0.03] rounded-md"
-              >
-                <FiGrid className="w-4 h-4 text-[#171717]" />
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                >
+                  <FiUser className="w-4 h-4 text-[#71717a]" />
+                  <span>Profile</span>
+                </Link>
+                <Link
+                  to="/pricing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FiCreditCard className="w-4 h-4 text-[#71717a]" />
+                    <span>Subscription</span>
+                  </div>
+                </Link>
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                >
+                  <FiSettings className="w-4 h-4 text-[#71717a]" />
+                  <span>Settings</span>
+                </Link>
+                <div className="border-t border-[#ebebeb] my-1 pt-1" />
+              </>
             )}
             <Link
               to="/features"
@@ -266,9 +352,10 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full text-center py-2 text-xs uppercase font-semibold tracking-wider text-[#ee0000] bg-white border border-[#ebebeb] rounded-md hover:bg-[#fff5f5] cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-medium text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] rounded-xl transition-colors cursor-pointer"
               >
-                Log Out
+                <FiLogOut className="w-4 h-4" />
+                <span>Sign Out</span>
               </button>
             ) : (
               <>
