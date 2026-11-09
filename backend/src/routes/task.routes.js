@@ -12,6 +12,7 @@ import {
 import { validate } from "../middlewares/validator.middleware.js";
 import {
   createTaskValidator,
+  updateTaskValidator,
   createSubTaskValidator,
   updateSubTaskValidator,
 } from "../validators/index.js";
@@ -42,7 +43,7 @@ router
   .get(validateProjectPermission(AvailableUserRole), getTaskById)
   .put(
     validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    createTaskValidator(),
+    updateTaskValidator(),
     validate,
     updateTask,
   )

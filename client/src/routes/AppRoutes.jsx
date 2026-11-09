@@ -11,6 +11,7 @@ import Dashboard from '../pages/Dashboard';
 import Workspace from '../pages/Workspace';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
+import ResetPassword from '../pages/ResetPassword';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
 
       {/* Protected app routes */}
       <Route path="/dashboard" element={<Dashboard />} />

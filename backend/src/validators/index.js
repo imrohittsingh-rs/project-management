@@ -154,6 +154,27 @@ const createTaskValidator = () => {
   ];
 };
 
+const updateTaskValidator = () => [
+  body("title")
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 100 })
+    .withMessage("Task title must be between 3 and 100 characters"),
+  body("description")
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("Task description must be less than 500 characters"),
+  body("assignedTo")
+    .optional({ nullable: true })
+    .isMongoId()
+    .withMessage("Invalid assignedTo ID"),
+  body("status")
+    .optional()
+    .isIn(AvailableTaskStatus)
+    .withMessage(`Status must be one of the following: ${AvailableTaskStatus.join(", ")}`),
+];
+
 const createSubTaskValidator = () => {
   return [
     body("title")
@@ -189,6 +210,7 @@ export {
   createProjectValidator,
   addMemberToProjectValidator,
   createTaskValidator,
+  updateTaskValidator,
   createSubTaskValidator,
   updateSubTaskValidator,
   createNoteValidator,
