@@ -5,8 +5,8 @@ const sendEmail = async function (options) {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
-      name: "Task Manager",
-      link: "https://taskmanager.com",
+      name: "Projectub",
+      link: "https://imrohittsingh.dev/",
     },
   });
 
@@ -15,7 +15,8 @@ const sendEmail = async function (options) {
 
   const transporter = nodemailer.createTransport({
     host: process.env.MAILTRAP_SMTP_HOST,
-    port: process.env.MAILTRAP_SMTP_PORT,
+    port: Number(process.env.MAILTRAP_SMTP_PORT),
+    secure: Number(process.env.MAILTRAP_SMTP_PORT) === 465,
     auth: {
       user: process.env.MAILTRAP_SMTP_USER,
       pass: process.env.MAILTRAP_SMTP_PASS,
@@ -24,7 +25,7 @@ const sendEmail = async function (options) {
 
   try {
     await transporter.sendMail({
-      from: "mail.taskmanager@example.com",
+      from: "Projectub <noreply@mail.imrohittsingh.dev>",
       to: options.email,
       subject: options.subject,
       text: emailTextual,
@@ -40,7 +41,7 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
   return {
     body: {
       name: username,
-      intro: "Welcome to App! We're very excited to have you on board.",
+      intro: "Welcome to Projectub! We're very excited to have you on board.",
       action: {
         instructions: "To verify you email, please click here:",
         button: {
@@ -59,9 +60,9 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
   return {
     body: {
       name: username,
-      intro: "We got a request to reset the password of your account.",
+      intro: "We received a request to reset your Projectub account password.",
       action: {
-        instructions: "To reset your password click on the following button",
+        instructions: "To reset your password, click button below:",
         button: {
           color: "#00a046",
           text: "Verify your email",
@@ -69,7 +70,7 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
         },
       },
       outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help",
+        "If you didn't request a password reset, you can safely ignore this email.",
     },
   };
 };
