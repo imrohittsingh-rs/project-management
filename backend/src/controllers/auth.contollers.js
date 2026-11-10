@@ -140,9 +140,14 @@ const handleUserLogin = asyncHandler(async (req, res) => {
     "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
   );
 
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    process.env.CORS_ORIGIN?.startsWith("https://");
+
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   };
 
   // Set the refresh token and access token in cookies
@@ -177,9 +182,14 @@ const handleUserLogout = asyncHandler(async (req, res) => {
     { new: true }, // return the updated document after the update operation is applied.
   );
 
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    process.env.CORS_ORIGIN?.startsWith("https://");
+
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   };
 
   res.clearCookie("accessToken", options).clearCookie("refreshToken", options);
@@ -219,7 +229,9 @@ const updateAvatar = asyncHandler(async (req, res) => {
   if (previousLocalPath) {
     const previousFilename = path.basename(previousLocalPath);
     if (previousFilename && previousFilename !== req.file.filename) {
-      await fs.unlink(path.resolve("public/images", previousFilename)).catch(() => {});
+      await fs
+        .unlink(path.resolve("public/images", previousFilename))
+        .catch(() => {});
     }
   }
 
@@ -228,7 +240,13 @@ const updateAvatar = asyncHandler(async (req, res) => {
   );
   return res
     .status(200)
-    .json(new ApiResponse(200, { user: updatedUser }, "Profile picture updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { user: updatedUser },
+        "Profile picture updated successfully",
+      ),
+    );
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
@@ -329,9 +347,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
 
+    const isProduction =
+      process.env.NODE_ENV === "production" ||
+      process.env.CORS_ORIGIN?.startsWith("https://");
+
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     };
 
     return res
