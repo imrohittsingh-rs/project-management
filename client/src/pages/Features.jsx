@@ -1,298 +1,340 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion as Motion } from "motion/react";
 import {
-  FiCheckSquare,
-  FiUsers,
-  FiFileText,
-  FiLock,
-  FiRefreshCw,
-  FiMail,
-  FiArrowRight,
-  FiChevronLeft,
-  FiChevronRight,
-  FiCheck,
-} from 'react-icons/fi';
-import { motion as Motion, AnimatePresence } from 'motion/react';
+  FaArrowRight,
+  FaPen,
+  FaTrash,
+  FaCheck,
+  FaNoteSticky,
+  FaFolderOpen,
+  FaListCheck,
+} from "react-icons/fa6";
+import { IoMdDoneAll } from "react-icons/io";
+import { RiProgress5Line } from "react-icons/ri";
+import { BsArrowReturnRight } from "react-icons/bs";
+import { useAuth } from "../context/AuthContext";
+import image1 from "../assets/image1.png";
+import image2 from "../assets/image2.png";
+import image3 from "../assets/image3.png";
+import inviteTeamMember from "../assets/invite-team-member.png";
 
-const features = [
+import FeatureCard from "../components/FeatureCard";
+
+const CoreFeatures = [
   {
-    id: 'tasks',
-    icon: FiCheckSquare,
-    title: 'Task & Subtask Management',
-    description:
-      'Create tasks with descriptions, priority levels, and assignees. Break complex work into granular subtasks with individual completion tracking. A 3-state system (Todo, In Progress, Done) keeps your velocity clear.',
-    tag: 'TASK MANAGEMENT',
-    highlights: [
-      'Subtasks with independent checklist states',
-      'Assignee attribution & file attachments',
-      'Three-state progress tracking: Todo, In Progress, Done',
-    ],
+    title: "Project Workspaces",
+    description: "Keep project goals, tasks, people, and progress together in one workspace.",
+    icon: "FaFolderOpen",
   },
   {
-    id: 'access',
-    icon: FiUsers,
-    title: 'Role-Based Team Access',
+    title: "Task Progress",
     description:
-      'A structured three-tier permission matrix: Admin, Project Admin, and Member. Admins govern workspace membership, Project Admins structure deliverables, and Members execute with focused access.',
-    tag: 'ACCESS CONTROL',
-    highlights: [
-      'Admin: Full workspace, role, and deletion authority',
-      'Project Admin: Task creation, edits, and subtask management',
-      'Member: Focused execution, subtask completion, and read access',
-    ],
+      "See what is planned, in progress, and done across every project.",
+    icon: "FaListCheck",
   },
   {
-    id: 'notes',
-    icon: FiFileText,
-    title: 'Embedded Project Notes',
+    title: "Team Collaboration",
     description:
-      'Attach structured architectural notes, meeting logs, and technical decisions directly to projects. Keep implementation context living alongside your tasks without needing third-party wikis.',
-    tag: 'DOCUMENTATION',
-    highlights: [
-      'Attached directly to project IDs with role verification',
-      'Persistent record of architectural choices and guidelines',
-      'Instant access for all project contributors',
-    ],
+      "Invite teammates and assign the right role for each project.",
+    icon: "FaUsers",
   },
   {
-    id: 'security',
-    icon: FiLock,
-    title: 'Secure Authentication & Verification',
+    title: "Notes & Documentation",
     description:
-      'Robust JWT-based authentication with token refresh mechanisms. Mandatory email verification secures account creation, and password reset flows ensure complete account safety.',
-    tag: 'SECURITY',
-    highlights: [
-      'JWT access tokens with secure refresh rotation',
-      'Cryptographic email verification on signup',
-      'Granular role-aware endpoint middleware protection',
-    ],
+      "Capture decisions, requirements, and project context where your team works.",
+    icon: "FaNoteSticky",
+  },
+];
+
+const actions = [
+  {
+    label: "Edit Tasks",
+    desc: "Update details as work evolves",
+    icon: <FaPen className="text-blue-500" size={10} />,
+    bg: "bg-blue-50",
   },
   {
-    id: 'dashboard',
-    icon: FiRefreshCw,
-    title: 'Real-Time Project Overview',
-    description:
-      'An instant snapshot of every project across your team. Track completion ratios, monitor in-flight tasks, and spot blockers across your entire workspace in a single view.',
-    tag: 'DASHBOARD',
-    highlights: [
-      'Consolidated metrics across all joined projects',
-      'Instant visibility into Todo, In Progress, and Done items',
-      'One-click navigation directly into project workspaces',
-    ],
+    label: "Assign Members",
+    desc: "Give every task a clear owner",
+    icon: <FaTrash className="text-red-500" size={10} />,
+    bg: "bg-red-50",
   },
   {
-    id: 'collaboration',
-    icon: FiMail,
-    title: 'Member Invitations & Lifecycle',
-    description:
-      'Invite team members to workspaces by email with assigned roles. Change permissions or revoke access at any point to maintain strict organizational control.',
-    tag: 'COLLABORATION',
-    highlights: [
-      'Email-based invitations with pre-configured roles',
-      'Instant membership updates without account recreation',
-      'Centralized member roster per project',
-    ],
+    label: "Track Status",
+    desc: "Move work from todo to done",
+    icon: <RiProgress5Line className="text-orange-500" size={10} />,
+    bg: "bg-zinc-100",
+  },
+  {
+    label: "Add Notes",
+    desc: "Keep important context close",
+    icon: <FaNoteSticky className="text-emerald-500" size={10} />,
+    bg: "bg-emerald-50",
+  },
+];
+
+const taskStats = [
+  {
+    label: "Total",
+    count: 4,
+    icon: <FaListCheck size={12} />,
+    badge: "bg-[#edf4ff] text-[#1769e0]",
+    badgeLabel: "All tasks",
+  },
+  {
+    label: "Projects",
+    count: 3,
+    icon: <FaFolderOpen size={12} />,
+    badge: "bg-[#f2f2f2] text-[#4d4d4d]",
+    badgeLabel: "All projects",
+  },
+  {
+    label: "In Progress",
+    count: 2,
+    icon: <RiProgress5Line size={13} />,
+    badge: "bg-[#fff3e0] text-[#ab570a]",
+    badgeLabel: "Active work",
+  },
+  {
+    label: "Done",
+    count: 1,
+    icon: <IoMdDoneAll size={11} />,
+    badge: "bg-[#d9f7ec] text-[#13795b]",
+    badgeLabel: "Completed",
   },
 ];
 
 const Features = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-
-  const currentFeature = features[activeIndex];
-
-  const handleNext = () => {
-    setDirection(1);
-    setActiveIndex((prev) => (prev + 1) % features.length);
-  };
-
-  const handlePrev = () => {
-    setDirection(-1);
-    setActiveIndex((prev) => (prev - 1 + features.length) % features.length);
-  };
-
-  const handleSelectTab = (index) => {
-    setDirection(index > activeIndex ? 1 : -1);
-    setActiveIndex(index);
-  };
-
-  const slideVariants = {
-    enter: (dir) => ({
-      x: dir > 0 ? 80 : -80,
-      opacity: 0,
-      scale: 0.98,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: [0.16, 1, 0.3, 1],
-      },
+  const { user } = useAuth();
+  const tasks = [
+    {
+      title: "Refresh the marketing site and launch the new homepage",
+      project: "Website Redesign",
+      logo: image1,
+      status: "done",
     },
-    exit: (dir) => ({
-      x: dir < 0 ? 80 : -80,
-      opacity: 0,
-      scale: 0.98,
-      transition: {
-        duration: 0.3,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    }),
+    {
+      title: "Plan the next release and coordinate the product team",
+      project: "Mobile App",
+      logo: image2,
+      status: "in_progress",
+    },
+    {
+      title: "Set quarterly goals and track delivery milestones",
+      project: "Q4 Planning",
+      logo: image3,
+      status: "todo",
+    },
+  ];
+
+  const statusDotClass = {
+    done: "bg-green-500",
+    in_progress: "bg-orange-500",
+    todo: "bg-gray-500",
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#171717] font-geist selection:bg-[#171717] selection:text-white">
-      {/* Header section */}
-      <section className="border-b border-[#ebebeb] bg-[#fafafa] px-4 py-16 text-center sm:px-8">
-        <Motion.div
-          initial={{ opacity: 0, y: 16 }}
+    <div className="max-w-5xl mx-auto px-4 pb-20">
+      <Motion.div
+        className="text-center pt-8 pb-16 max-w-2xl mx-auto"
+        initial={{ opacity: 0, y: -18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+      >
+        <Motion.h1
+          className="text-3xl md:text-5xl font-extrabold text-gray-950 tracking-tight leading-tight mb-4"
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-2xl"
+          transition={{ delay: 0.12, duration: 0.5 }}
         >
-          <p className="font-mono-eyebrow text-[#8f8f8f]">Platform</p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#171717] sm:text-5xl">
-            Everything your team needs
-          </h1>
-          <p className="mt-4 text-base text-[#4d4d4d] leading-relaxed">
-            Projectub is a focused project management platform built for teams that ship. No bloat. Just the tools that matter.
-          </p>
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <Link
-              to="/signup"
-              className="inline-flex items-center gap-2 h-10 px-5 text-sm font-medium rounded-[6px] bg-[#171717] text-white hover:bg-[#333333] transition-colors shadow-xs"
-            >
-              Get Started
-              <FiArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center h-10 px-5 text-sm font-medium rounded-[6px] bg-white text-[#171717] border border-[#ebebeb] hover:bg-[#fafafa] transition-colors"
-            >
-              Sign In
-            </Link>
-          </div>
-        </Motion.div>
-      </section>
+          Everything your team needs to ship great work
+        </Motion.h1>
+        <Motion.p
+          className="text-gray-500 text-base font-medium leading-relaxed"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
+        >
+          Organize projects, assign tasks, collaborate with your team, and keep
+          every important decision in one place.
+        </Motion.p>
+      </Motion.div>
 
-      {/* Feature Carousel Section */}
-      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-8">
-        {/* Navigation Category Tabs */}
-        <div className="flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-1.5 scrollbar-none">
-          {features.map((item, index) => {
-            const isCurrent = index === activeIndex;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleSelectTab(index)}
-                className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all shrink-0 cursor-pointer ${
-                  isCurrent
-                    ? 'text-white'
-                    : 'text-[#525252] hover:text-[#171717] hover:bg-black/[0.04]'
-                }`}
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+        {/* Card 1 */}
+        <FeatureCard {...CoreFeatures[0]}>
+          <div className="flex flex-col gap-2.5 w-full">
+            {tasks.map((task, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-gray-200/50 p-2.5 rounded-xl flex items-center justify-between gap-4 shadow-2xs transition-all select-none"
               >
-                {isCurrent && (
-                  <Motion.div
-                    layoutId="activeFeaturePill"
-                    className="absolute inset-0 bg-[#171717] rounded-full z-0"
-                    transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10 flex items-center gap-1.5">
-                  <item.icon className="w-3.5 h-3.5" />
-                  {item.tag}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Carousel Showcase Card */}
-        <div className="relative mt-6 rounded-2xl border border-[#ebebeb] bg-white shadow-[0_12px_36px_-6px_rgba(0,0,0,0.06)] overflow-hidden">
-          <div className="p-6 sm:p-10 min-h-[440px] flex items-center">
-            <AnimatePresence mode="wait" custom={direction}>
-              <Motion.div
-                key={currentFeature.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12"
-              >
-                <div className="flex flex-col justify-center lg:col-span-6">
-                  <div className="inline-flex w-fit items-center gap-2 text-[#4d4d4d]">
-                    <currentFeature.icon aria-hidden="true" className="h-4 w-4 text-[#171717]" />
-                    <span className="font-mono-eyebrow text-[#4d4d4d]">{currentFeature.tag}</span>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-gray-100 text-black flex items-center justify-center font-bold text-xs shrink-0 select-none overflow-hidden">
+                    <img
+                      src={task.logo}
+                      alt=""
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
                   </div>
-                  <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-1.28px] text-[#171717] sm:text-4xl">
-                    {currentFeature.title}
-                  </h2>
-                  <p className="mt-4 max-w-xl text-base leading-6 text-[#4d4d4d]">
-                    {currentFeature.description}
+                  <div className="min-w-0">
+                    <div className="text-md text-gray-900 flex items-center gap-1 min-w-0">
+                      <span
+                        className={`h-2 w-2 shrink-0 rounded-full ${
+                          statusDotClass[task.status] || statusDotClass.todo
+                        }`}
+                        aria-label={`${task.status.replace("_", " ")} status`}
+                        title={task.status.replace("_", " ")}
+                      />
+                      <span className="truncate text-sm font-medium">{task.title}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm text-gray-400">
+                      <BsArrowReturnRight
+                        className="text-black shrink-0"
+                        size={10}
+                      />
+                      <span className="truncate max-w-[130px] sm:max-w-[180px] hover:underline text-xs">
+                        {task.project}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FeatureCard>
+
+        {/* Card 2*/}
+        <FeatureCard {...CoreFeatures[1]}>
+          <div className="grid grid-cols-2 gap-3 w-full h-full">
+            {taskStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col justify-between rounded-2xl border border-gray-200/70 bg-white p-3 shadow-2xs"
+              >
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-[#7890ad]">
+                    {stat.label}
+                  </p>
+                  <p className="text-2xl font-semibold leading-none text-gray-950 mt-3">
+                    {stat.count}
                   </p>
                 </div>
-                <div className="border-t border-[#ebebeb] pt-5 lg:col-span-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
-                  <p className="mb-4 font-mono-eyebrow text-[#4d4d4d]">Included</p>
-                  <ul className="space-y-4">
-                    {currentFeature.highlights.map((highlight) => (
-                      <li key={highlight} className="flex items-start gap-3 text-base leading-6 text-[#4d4d4d]">
-                        <FiCheck aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-[#171717]" />
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div
+                  className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${stat.badge}`}
+                >
+                  {stat.icon}
+                  <span>{stat.badgeLabel}</span>
                 </div>
-              </Motion.div>
-            </AnimatePresence>
+              </div>
+            ))}
           </div>
+        </FeatureCard>
 
-          {/* Carousel Bottom Control Bar */}
-          <div className="flex items-center justify-between px-6 py-4 bg-[#fafafa] border-t border-[#ebebeb]">
-            {/* Step Indicators */}
-            <div className="flex items-center gap-1.5">
-              {features.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelectTab(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    i === activeIndex
-                      ? 'w-6 bg-[#171717]'
-                      : 'w-1.5 bg-[#d4d4d8] hover:bg-[#a1a1aa]'
-                  }`}
-                />
-              ))}
-              <span className="ml-3 text-xs font-mono text-[#8f8f8f]">
-                0{activeIndex + 1} / 0{features.length}
-              </span>
-            </div>
+        {/* Card 3*/}
+        <FeatureCard {...CoreFeatures[2]}>
+          <Motion.div
+            className="flex h-full w-full items-center justify-center overflow-hidden rounded-xl bg-white"
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ delay: 0.15, duration: 0.45, ease: "easeOut" }}
+          >
+            <img
+              src={inviteTeamMember}
+              alt="Invite a team member form"
+              className="h-full w-full object-contain"
+            />
+          </Motion.div>
+        </FeatureCard>
 
-            {/* Arrows */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous feature"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#f0f0f0] transition-colors cursor-pointer shadow-2xs"
+        {/* Card 4*/}
+        <FeatureCard {...CoreFeatures[3]}>
+          {/* Simple list of action items */}
+          <div className="grow flex flex-col justify-center gap-2 w-full my-1.5">
+            {actions.map((action, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between bg-white border border-gray-200/50 p-2.5 rounded-xl shadow-2xs hover:bg-gray-50/50 transition-colors select-none group/row"
               >
-                <FiChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next feature"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#f0f0f0] transition-colors cursor-pointer shadow-2xs"
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`w-6 h-6 rounded-lg ${action.bg} flex items-center justify-center shrink-0`}
+                  >
+                    {action.icon}
+                  </div>
+                  <div className="min-w-0 flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+                    <span className="text-sm text-gray-900 font-bold sm:font-normal leading-normal sm:w-[115px] sm:shrink-0 text-left">
+                      {action.label}
+                    </span>
+                    <span className="text-xs text-gray-400 truncate leading-normal">
+                      {action.desc}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Green check mark */}
+                <div className="w-4 h-4 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                  <FaCheck className="text-emerald-600" size={8} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </FeatureCard>
+      </div>
+
+      {/* Footer Section */}
+      <div className="mt-20 text-center bg-white border border-gray-200/60 p-8 md:p-12 rounded-3xl shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-gray-50 to-transparent rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+        <div className="relative z-10 max-w-lg mx-auto">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-950 tracking-tight mb-3">
+            Ready to bring your next project into focus?
+          </h2>
+          <p className="text-gray-500 text-sm md:text-base mb-8 font-medium">
+            Create an account and give your team a clearer way to plan,
+            collaborate, and deliver.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {!user ? (
+              <Link
+                to="/signup"
+                className="w-full sm:w-auto bg-black hover:bg-zinc-950 text-white font-semibold px-6 py-3.5 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
               >
-                <FiChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+                Get Started for Free
+                <FaArrowRight size={14} />
+              </Link>
+            ) : (
+              <Link
+                to="/dashboard"
+                className="w-full sm:w-auto bg-black hover:bg-zinc-950 text-white font-semibold px-6 py-3.5 rounded-xl text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+              >
+                Open Your Dashboard
+                <FaArrowRight size={14} />
+              </Link>
+            )}
+            {!user ? (
+              <Link
+                to="/login"
+                className="w-full sm:w-auto bg-white hover:bg-gray-50 text-gray-700 font-semibold border border-gray-200 px-6 py-3.5 rounded-xl text-sm transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
+              >
+                Log In
+              </Link>
+            ) : (
+              <Link
+                to="/dashboard"
+                className="w-full sm:w-auto bg-white hover:bg-gray-50 text-gray-700 font-semibold border border-gray-200 px-6 py-3.5 rounded-xl text-sm transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
         </div>
-      </section>
-
+      </div>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiArrowUpRight } from 'react-icons/fi';
 import heroImage from '../assets/Serene Cherry Blossom Sunrise Promenade.png';
-import logoImage from '../assets/logo.png';
 
 const Hero = () => {
   return (
@@ -27,14 +26,14 @@ const Hero = () => {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/how-it-works"
-            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-md shadow-2xs transition-all"
+            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-md shadow-2xs transition-colors"
           >
             Explore Platform
           </Link>
           <Link
             to="/signup"
             id="hero-signup-btn"
-            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white bg-[#171717] hover:bg-[#2b2b2b] rounded-md shadow-xs transition-all"
+            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white bg-[#171717] hover:bg-[#2b2b2b] rounded-md shadow-xs transition-colors"
           >
             Get Started
           </Link>
@@ -54,56 +53,7 @@ const Hero = () => {
 
           </div>
 
-          {/* Docked 3-Column Feature Grid directly beneath image */}
-          <div className="grid grid-cols-1 divide-y divide-[#ebebeb] bg-white text-left md:grid-cols-3 md:divide-x md:divide-y-0">
-            
-            {/* Feature 1 */}
-            <Link to="/features" className="group flex min-h-52 flex-col justify-between p-6 transition-colors hover:bg-[#fcfcfc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-[#0070f3]">
-              <div>
-                <div className="mb-5 flex items-center justify-between">
-                  <span className="font-mono-eyebrow text-[#8f8f8f]">01 / WORKFLOW</span>
-                  <FiArrowUpRight aria-hidden="true" className="h-4 w-4 text-[#8f8f8f] transition-colors group-hover:text-[#171717]" />
-                </div>
-                <h3 className="text-base font-semibold tracking-[-0.4px] text-[#171717]">Task &amp; Subtask Matrix</h3>
-                <p className="mt-2 text-sm leading-5 text-[#4d4d4d]">
-                  Break complex projects into manageable tasks and nested subtasks. Track progress through Todo, In Progress, and Done statuses.
-                </p>
-              </div>
-              <span className="mt-5 border-t border-[#f2f2f2] pt-3 font-mono-eyebrow text-[#8f8f8f]">TASK MANAGEMENT</span>
-            </Link>
-
-            {/* Feature 2 */}
-            <Link to="/features" className="group flex min-h-52 flex-col justify-between p-6 transition-colors hover:bg-[#fcfcfc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-[#0070f3]">
-              <div>
-                <div className="mb-5 flex items-center justify-between">
-                  <span className="font-mono-eyebrow text-[#8f8f8f]">02 / PERMISSIONS</span>
-                  <FiArrowUpRight aria-hidden="true" className="h-4 w-4 text-[#8f8f8f] transition-colors group-hover:text-[#171717]" />
-                </div>
-                <h3 className="text-base font-semibold tracking-[-0.4px] text-[#171717]">Role-Based Access</h3>
-                <p className="mt-2 text-sm leading-5 text-[#4d4d4d]">
-                  Manage project permissions with role-based access. Control who can manage projects, assign tasks, and collaborate with your team.
-                </p>
-              </div>
-              <span className="mt-5 border-t border-[#f2f2f2] pt-3 font-mono-eyebrow text-[#8f8f8f]">ACCESS CONTROL</span>
-            </Link>
-
-            {/* Feature 3 */}
-            <Link to="/features" className="group flex min-h-52 flex-col justify-between p-6 transition-colors hover:bg-[#fcfcfc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-[#0070f3]">
-              <div>
-                <div className="mb-5 flex items-center justify-between">
-                  <span className="font-mono-eyebrow text-[#8f8f8f]">03 / CONTEXT</span>
-                  <FiArrowUpRight aria-hidden="true" className="h-4 w-4 text-[#8f8f8f] transition-colors group-hover:text-[#171717]" />
-                </div>
-                <h3 className="text-base font-semibold tracking-[-0.4px] text-[#171717]">Integrated Project Notes</h3>
-                <p className="mt-2 text-sm leading-5 text-[#4d4d4d]">
-                  Keep project requirements, technical decisions, and implementation notes alongside your work instead of scattering context across tools.
-                </p>
-              </div>
-              <span className="mt-5 border-t border-[#f2f2f2] pt-3 font-mono-eyebrow text-[#8f8f8f]">PROJECT DOCUMENTATION</span>
-            </Link>
-
-          </div>
-
+          {/* Docked Cards */}
         </div>
 
       </div>

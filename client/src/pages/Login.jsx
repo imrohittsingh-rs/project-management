@@ -239,7 +239,7 @@ export default function Login() {
                     }}
                     onBlur={() => setForgotTouched(true)}
                     placeholder="jane@company.com"
-                    className="w-full h-10 pl-9 pr-3 text-sm text-[#171717] bg-white border border-[#ebebeb] focus:border-[#0070f3] focus:ring-2 focus:ring-[#d3e5ff] rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none transition-all"
+                    className="w-full h-10 pl-9 pr-3 text-sm text-[#171717] bg-white border border-[#ebebeb] focus:border-[#0070f3] focus:ring-2 focus:ring-[#d3e5ff] rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none transition-colors"
                   />
                 </div>
                 {forgotTouched && !EMAIL_REGEX.test(forgotEmail.trim()) && (
@@ -325,7 +325,7 @@ export default function Login() {
                   identifierError
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-colors`}
               />
             </div>
             {identifierError && (
@@ -372,7 +372,7 @@ export default function Login() {
                   passwordError
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-colors`}
               />
               <button
                 type="button"

@@ -73,36 +73,38 @@ const ProjectDetails = () => {
   }
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] bg-[#fafafa] px-4 py-6 sm:px-8">
-      <div className="mx-auto max-w-[1180px]">
+    <section className="min-h-[calc(100vh-4rem)] bg-[#fafafa] px-3 py-5 sm:px-6 sm:py-7">
+      <div className="mx-auto max-w-[1180px] rounded-2xl border border-[#ebebeb] bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-6">
         {/* Header */}
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-start gap-3">
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="rounded-[6px] p-1.5 text-[#4d4d4d] hover:bg-white hover:text-[#171717] transition-colors"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#4d4d4d] transition-colors hover:bg-[#f2f2f2] hover:text-[#171717]"
               aria-label="Back to dashboard"
             >
               <FiArrowLeft className="h-5 w-5" />
             </button>
             <div className="min-w-0">
-              <h1 className="text-xl font-semibold tracking-tight text-[#171717] truncate">
-                {project.name}
-              </h1>
+              <div className="flex min-w-0 items-center gap-2">
+                <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight text-[#171717]">
+                  {project.name}
+                </h1>
+                <span className={`shrink-0 rounded-sm px-2 py-0.5 text-[11px] font-medium ${ROLE_CONFIG[userRole]?.badge || ROLE_CONFIG.member.badge}`}>
+                  {ROLE_CONFIG[userRole]?.label || 'Member'}
+                </span>
+              </div>
               {project.description && (
                 <p className="mt-0.5 text-xs text-[#8f8f8f] truncate">{project.description}</p>
               )}
             </div>
-            <span className={`shrink-0 rounded-[4px] px-2 py-0.5 text-[11px] font-medium ${ROLE_CONFIG[userRole]?.badge || ROLE_CONFIG.member.badge}`}>
-              {ROLE_CONFIG[userRole]?.label || 'Member'}
-            </span>
           </div>
         </header>
 
         {/* Tab nav */}
         <nav
-          className="mb-5 flex w-fit max-w-full overflow-x-auto rounded-[6px] border border-[#ebebeb] bg-white"
+          className="mb-6 flex w-fit max-w-full overflow-x-auto rounded-lg border border-[#ebebeb] bg-[#fafafa]"
           aria-label="Project sections"
         >
           {TABS.map(({ label, icon: Icon }) => (
@@ -128,7 +130,7 @@ const ProjectDetails = () => {
           <TasksTab projectId={projectId} members={members} userRole={userRole} />
         )}
         {activeTab === 'Members' && (
-          <MembersTab projectId={projectId} userRole={userRole} />
+          <MembersTab projectId={projectId} userRole={userRole} currentUserId={user?._id} />
         )}
         {activeTab === 'Notes' && (
           <NotesTab projectId={projectId} userRole={userRole} />

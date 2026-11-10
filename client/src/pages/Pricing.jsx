@@ -110,13 +110,13 @@ const Pricing = () => {
                 }`}
               />
             </button>
-            <span
+            <label
               onClick={() => setIsAnnual(!isAnnual)}
               className="text-sm font-medium text-[#171717] cursor-pointer select-none"
             >
               Annual billing{' '}
               <span className="text-[#16a34a] font-semibold">(Save 20%)</span>
-            </span>
+            </label>
           </div>
         </Motion.div>
       </section>
@@ -226,4 +226,3 @@ const Pricing = () => {
 };
 
 export default Pricing;
-

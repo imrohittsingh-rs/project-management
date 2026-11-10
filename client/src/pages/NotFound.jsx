@@ -4,10 +4,8 @@ import { FiArrowRight } from 'react-icons/fi';
 
 const suggestions = [
   { name: 'Home', to: '/' },
-  { name: 'Blog', to: '/blog' },
   { name: 'Pricing', to: '/pricing' },
   { name: 'features', to: '/features' },
-  { name: 'Contact', to: '/contact' },
 ];
 
 const NotFound = () => {
@@ -36,10 +34,10 @@ const NotFound = () => {
             <Link
               key={item.name}
               to={item.to}
-              className="group flex items-center justify-between px-5 py-3.5 text-sm text-[#e5e5e5] hover:text-white hover:bg-white/[0.04] transition-all duration-150"
+              className="group flex items-center justify-between px-5 py-3.5 text-sm text-[#e5e5e5] hover:text-white hover:bg-white/[0.04] transition-colors duration-150"
             >
               <span>{item.name}</span>
-              <FiArrowRight className="w-4 h-4 text-[#737373] group-hover:text-white group-hover:translate-x-0.5 transition-all duration-150" />
+              <FiArrowRight className="w-4 h-4 text-[#737373] group-hover:text-white group-hover:translate-x-0.5 transition-[color,background-color,transform] duration-150" />
             </Link>
           ))}
         </div>
@@ -47,13 +45,13 @@ const NotFound = () => {
         <div className="w-full max-w-[340px] mt-3.5 grid grid-cols-2 gap-2.5">
           <Link
             to="/login"
-            className="flex items-center justify-center py-2.5 px-4 text-xs sm:text-sm font-medium text-neutral-300 border border-[#262626] bg-[#0c0c0c]/80 hover:bg-white/[0.06] hover:text-white hover:border-[#383838] rounded-xl transition-all duration-150"
+            className="flex items-center justify-center py-2.5 px-4 text-xs sm:text-sm font-medium text-neutral-300 border border-[#262626] bg-[#0c0c0c]/80 hover:bg-white/[0.06] hover:text-white hover:border-[#383838] rounded-xl transition-colors duration-150"
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="flex items-center justify-center py-2.5 px-4 text-xs sm:text-sm font-medium text-[#0a0a0a] bg-white hover:bg-neutral-200 rounded-xl transition-all duration-150 shadow-sm"
+            className="flex items-center justify-center py-2.5 px-4 text-xs sm:text-sm font-medium text-[#0a0a0a] bg-white hover:bg-neutral-200 rounded-xl transition-colors duration-150 shadow-sm"
           >
             Signup
           </Link>

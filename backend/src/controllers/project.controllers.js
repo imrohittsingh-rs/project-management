@@ -240,6 +240,10 @@ const updateMemberRole = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid role");
   }
 
+  if (req.user._id.toString() === userId) {
+    throw new ApiError(403, "You cannot change your own project role");
+  }
+
   const projectMember = await ProjectMember.findOneAndUpdate(
     {
       user: new mongoose.Types.ObjectId(userId),

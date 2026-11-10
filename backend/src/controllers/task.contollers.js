@@ -20,7 +20,7 @@ const getTasks = asyncHandler(async (req, res) => {
     project: new mongoose.Types.ObjectId(projectId),
   })
     .populate("assignedTo", "avatar username fullName")
-    .populate("assignedBy", "username fullName");
+    .populate("assignedBy", "avatar username fullName");
   return res
     .status(200)
     .json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
