@@ -25,7 +25,7 @@ const Hero = () => {
         {/* Action CTAs */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            to="/how-it-works"
+            to="/features"
             className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-md shadow-2xs transition-colors"
           >
             Explore Platform

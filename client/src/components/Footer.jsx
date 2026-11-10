@@ -13,7 +13,6 @@ const Footer = () => {
   const navLinks = [
     { label: 'Features', to: '/features' },
     { label: 'Pricing', to: '/pricing' },
-    { label: 'How it works', to: '/how-it-works' },
     { label: 'Log In', to: '/login' },
     { label: 'Get Started', to: '/signup' },
   ];

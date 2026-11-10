@@ -50,7 +50,6 @@ const Navbar = () => {
     ...(user ? [{ name: "Dashboard", to: "/dashboard" }] : []),
     { name: "Features", to: "/features" },
     { name: "Pricing", to: "/pricing" },
-    { name: "How it works", to: "/how-it-works" },
   ];
 
   // Helper to extract initials
