@@ -236,6 +236,7 @@ cp backend/.env.example backend/.env
 | `MAILTRAP_SMTP_PORT` | SMTP port | `2525` |
 | `MAILTRAP_SMTP_USER` | Mailtrap inbox username | `replace-with-mailtrap-username` |
 | `MAILTRAP_SMTP_PASS` | Mailtrap inbox password | `replace-with-mailtrap-password` |
+| `MAIL_FROM` | Verified sender address for live email delivery | `Projectub <noreply@mail.imrohittsingh.dev>` |
 
 ---
 

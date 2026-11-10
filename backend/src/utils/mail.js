@@ -1,6 +1,23 @@
 import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
 
+const smtpPort = Number(process.env.MAILTRAP_SMTP_PORT);
+const mailFrom =
+  process.env.MAIL_FROM || "Projectub <noreply@mail.imrohittsingh.dev>";
+
+const transporter = nodemailer.createTransport({
+  host: process.env.MAILTRAP_SMTP_HOST,
+  port: smtpPort,
+  secure: smtpPort === 465,
+  auth: {
+    user: process.env.MAILTRAP_SMTP_USER,
+    pass: process.env.MAILTRAP_SMTP_PASS,
+  },
+  connectionTimeout: 10_000,
+  greetingTimeout: 10_000,
+  socketTimeout: 20_000,
+});
+
 const sendEmail = async function (options) {
   const mailGenerator = new Mailgen({
     theme: "default",
@@ -13,19 +30,9 @@ const sendEmail = async function (options) {
   const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
   const emailHtml = mailGenerator.generate(options.mailgenContent);
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.MAILTRAP_SMTP_HOST,
-    port: Number(process.env.MAILTRAP_SMTP_PORT),
-    secure: Number(process.env.MAILTRAP_SMTP_PORT) === 465,
-    auth: {
-      user: process.env.MAILTRAP_SMTP_USER,
-      pass: process.env.MAILTRAP_SMTP_PASS,
-    },
-  });
-
   try {
     await transporter.sendMail({
-      from: "Projectub <noreply@mail.imrohittsingh.dev>",
+      from: mailFrom,
       to: options.email,
       subject: options.subject,
       text: emailTextual,

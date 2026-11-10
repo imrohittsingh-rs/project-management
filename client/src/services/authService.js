@@ -46,7 +46,7 @@ export const resetPassword = async (resetToken, newPassword) => {
 }
 
 export const resendVerificationEmail = async () => {
-    const res = await api.post("/auth/resend-email-verification");
+    const res = await api.post("/auth/resend-verification-email");
     return res.data;
 }
 
