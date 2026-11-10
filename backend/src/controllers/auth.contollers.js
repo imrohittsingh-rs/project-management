@@ -12,6 +12,13 @@ import jwt from "jsonwebtoken";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.CORS_ORIGIN?.startsWith("https://");
+const serverUrl = isProduction
+  ? process.env.SERVER_URL
+  : "http://localhost:8000";
+
 // Generate access and refresh tokens for a user
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -45,7 +52,7 @@ const handleUserRegister = asyncHandler(async (req, res) => {
   const { email, password, username, fullName } = req.body;
   const avatar = req.file
     ? {
-        url: `${process.env.SERVER_URL}/images/${req.file.filename}`,
+        url: `${serverUrl}/images/${req.file.filename}`,
         localPath: req.file.path,
       }
     : undefined;
@@ -140,10 +147,6 @@ const handleUserLogin = asyncHandler(async (req, res) => {
     "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
   );
 
-  const isProduction =
-    process.env.NODE_ENV === "production" ||
-    process.env.CORS_ORIGIN?.startsWith("https://");
-
   const options = {
     httpOnly: true,
     secure: isProduction,
@@ -182,10 +185,6 @@ const handleUserLogout = asyncHandler(async (req, res) => {
     { new: true }, // return the updated document after the update operation is applied.
   );
 
-  const isProduction =
-    process.env.NODE_ENV === "production" ||
-    process.env.CORS_ORIGIN?.startsWith("https://");
-
   const options = {
     httpOnly: true,
     secure: isProduction,
@@ -221,7 +220,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
   const previousLocalPath = user.avatar?.localPath;
   user.avatar = {
-    url: `${process.env.SERVER_URL}/images/${req.file.filename}`,
+    url: `${serverUrl}/images/${req.file.filename}`,
     localPath: req.file.path,
   };
   await user.save({ validateBeforeSave: false });
@@ -346,10 +345,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
-
-    const isProduction =
-      process.env.NODE_ENV === "production" ||
-      process.env.CORS_ORIGIN?.startsWith("https://");
 
     const options = {
       httpOnly: true,
