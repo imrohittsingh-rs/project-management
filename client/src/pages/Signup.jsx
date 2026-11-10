@@ -177,7 +177,7 @@ export default function Signup() {
   if (successData) {
     return (
       <div className="min-h-screen w-full bg-[#fafafa] flex items-center justify-center p-4 selection:bg-[#d3e5ff] selection:text-[#0761d1]">
-        <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
+        <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-5 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
           <div className="flex flex-col items-center text-center">
             <div className="w-12 h-12 rounded-[8px] bg-[#f2f2f2] border border-[#ebebeb] flex items-center justify-center text-[#171717] mb-5">
               <FiCheckCircle className="w-6 h-6 text-emerald-500" />
@@ -236,7 +236,7 @@ export default function Signup() {
     <div className="min-h-screen w-full bg-[#fafafa] flex flex-col justify-center items-center py-12 px-4 selection:bg-[#d3e5ff] selection:text-[#0761d1]">
 
       {/* Main Card */}
-      <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
+      <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-5 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
         <div className="mb-6">
           <h1 className="text-3xl text-center font-semibold text-[#171717] tracking-[-0.6px] mb-1.5">
             Your first project <br /> is just a sign-up away.

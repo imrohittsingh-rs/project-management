@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   FiUser,
   FiMail,
@@ -8,11 +8,42 @@ import {
   FiLoader,
   FiAlertCircle,
   FiCheck,
+  FiCamera,
 } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
 
+const PasswordInput = ({ id, label, value, onChange, show, onToggle, autoComplete = 'current-password' }) => (
+  <div>
+    <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-[#171717]">
+      {label}
+    </label>
+    <div className="relative">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8f8f8f]">
+        <FiLock aria-hidden="true" className="h-4 w-4" />
+      </div>
+      <input
+        id={id}
+        type={show ? 'text' : 'password'}
+        required
+        value={value}
+        onChange={onChange}
+        autoComplete={autoComplete}
+        className="h-10 w-full rounded-[6px] border border-[#ebebeb] bg-white pl-9 pr-10 text-sm text-[#171717] placeholder:text-[#a1a1a1] transition-colors focus:border-[#171717] focus:outline-none"
+      />
+      <button
+        type="button"
+        onClick={onToggle}
+        className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#8f8f8f] transition-colors hover:text-[#171717]"
+        aria-label={show ? 'Hide password' : 'Show password'}
+      >
+        {show ? <FiEyeOff aria-hidden="true" className="h-4 w-4" /> : <FiEye aria-hidden="true" className="h-4 w-4" />}
+      </button>
+    </div>
+  </div>
+)
+
 const Profile = () => {
-  const { user, changePassword, resendVerificationEmail } = useAuth()
+  const { user, updateAvatar, changePassword, resendVerificationEmail } = useAuth()
 
   const [passwords, setPasswords] = useState({
     oldPassword: '',
@@ -27,6 +58,42 @@ const Profile = () => {
   const [pwSuccess, setPwSuccess] = useState('')
   const [resending, setResending] = useState(false)
   const [resendMsg, setResendMsg] = useState('')
+  const [avatarBusy, setAvatarBusy] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
+  const [avatarSuccess, setAvatarSuccess] = useState('')
+
+  const avatarUrl = user?.avatar?.url || (typeof user?.avatar === 'string' ? user.avatar : '')
+
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setAvatarError('')
+    setAvatarSuccess('')
+    if (!file.type.startsWith('image/')) {
+      setAvatarError('Choose an image file.')
+      event.target.value = ''
+      return
+    }
+    if (file.size > 1_000_000) {
+      setAvatarError('Image must be 1 MB or smaller.')
+      event.target.value = ''
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('avatar', file)
+    setAvatarBusy(true)
+    try {
+      await updateAvatar(formData)
+      setAvatarSuccess('Profile picture updated.')
+    } catch (err) {
+      setAvatarError(err?.response?.data?.message || 'Unable to update profile picture.')
+    } finally {
+      setAvatarBusy(false)
+      event.target.value = ''
+    }
+  }
 
   const getInitials = () => {
     if (!user) return 'U'
@@ -81,36 +148,6 @@ const Profile = () => {
     }
   }
 
-  const PasswordInput = ({ id, label, value, onChange, show, onToggle }) => (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-[#171717] mb-1.5">
-        {label}
-      </label>
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8f8f8f]">
-          <FiLock className="h-4 w-4" />
-        </div>
-        <input
-          id={id}
-          type={show ? 'text' : 'password'}
-          required
-          value={value}
-          onChange={onChange}
-          placeholder="••••••••"
-          className="w-full h-10 pl-9 pr-10 text-sm bg-white border border-[#ebebeb] rounded-[6px] text-[#171717] placeholder:text-[#a1a1a1] focus:outline-none focus:border-[#171717] transition-colors"
-        />
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8f8f8f] hover:text-[#171717] transition-colors"
-          aria-label={show ? 'Hide password' : 'Show password'}
-        >
-          {show ? <FiEyeOff className="h-4 w-4" /> : <FiEye className="h-4 w-4" />}
-        </button>
-      </div>
-    </div>
-  )
-
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-[#fafafa] px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-xl">
@@ -122,9 +159,13 @@ const Profile = () => {
         {/* User info card */}
         <div className="mb-6 rounded-[6px] border border-[#ebebeb] bg-white p-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#171717] text-xl font-semibold text-white">
-              {getInitials()}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={`${user?.fullName || user?.username}'s profile`} className="h-14 w-14 shrink-0 rounded-full border border-[#ebebeb] object-cover" />
+            ) : (
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#171717] text-xl font-semibold text-white">
+                {getInitials()}
+              </div>
+            )}
             <div className="min-w-0">
               <p className="text-base font-semibold text-[#171717] truncate">
                 {user?.fullName || user?.username}
@@ -141,6 +182,17 @@ const Profile = () => {
                 </span>
               )}
             </div>
+          </div>
+
+          <div className="mt-4">
+            <label htmlFor="profile-picture" className={`inline-flex h-9 cursor-pointer items-center gap-2 rounded-[6px] border border-[#ebebeb] bg-white px-3 text-sm font-medium text-[#171717] transition-colors hover:bg-[#fafafa] ${avatarBusy ? 'pointer-events-none opacity-60' : ''}`}>
+              {avatarBusy ? <FiLoader className="h-4 w-4 animate-spin" /> : <FiCamera className="h-4 w-4" />}
+              {avatarBusy ? 'Uploading...' : avatarUrl ? 'Change picture' : 'Upload picture'}
+            </label>
+            <input id="profile-picture" type="file" accept="image/*" onChange={handleAvatarChange} disabled={avatarBusy} className="sr-only" />
+            <p className="mt-1.5 text-xs text-[#8f8f8f]">Image file, up to 1 MB.</p>
+            {avatarError && <p role="alert" className="mt-2 text-xs text-[#c50000]">{avatarError}</p>}
+            {avatarSuccess && <p role="status" className="mt-2 text-xs text-[#13795b]">{avatarSuccess}</p>}
           </div>
 
           <div className="mt-5 space-y-3 border-t border-[#f2f2f2] pt-5">
@@ -204,6 +256,7 @@ const Profile = () => {
               value={passwords.newPassword}
               onChange={(e) => setPasswords((p) => ({ ...p, newPassword: e.target.value }))}
               show={showNew}
+              autoComplete="new-password"
               onToggle={() => setShowNew((v) => !v)}
             />
             <PasswordInput
@@ -212,6 +265,7 @@ const Profile = () => {
               value={passwords.confirmPassword}
               onChange={(e) => setPasswords((p) => ({ ...p, confirmPassword: e.target.value }))}
               show={showConfirm}
+              autoComplete="new-password"
               onToggle={() => setShowConfirm((v) => !v)}
             />
             <button

@@ -10,6 +10,7 @@ import {
   register as registerService,
   logout as logoutService,
   getCurrentUser as getCurrentUserService,
+  updateAvatar as updateAvatarService,
   changePassword as changePasswordService,
   refreshAccessToken as refreshAccessTokenService,
   verifyEmail as verifyEmailService,
@@ -65,6 +66,13 @@ export const AuthProvider = ({ children }) => {
         return currentUser;
     }
 
+    const updateAvatar = async (formData) => {
+        const response = await updateAvatarService(formData);
+        const updatedUser = response?.data?.user;
+        if (updatedUser) setUser(updatedUser);
+        return updatedUser;
+    }
+
     const changePassword = async (userData) => {
         return await changePasswordService(userData);
     }
@@ -91,7 +99,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ user, register, login, logout, getCurrentUser, changePassword, refreshAccessToken, verifyEmail, forgotPassword, resetPassword, resendVerificationEmail, loading }}>
+        <AuthContext.Provider value={{ user, register, login, logout, getCurrentUser, updateAvatar, changePassword, refreshAccessToken, verifyEmail, forgotPassword, resetPassword, resendVerificationEmail, loading }}>
             {children}
         </AuthContext.Provider>
     )

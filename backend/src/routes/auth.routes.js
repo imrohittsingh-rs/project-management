@@ -4,6 +4,7 @@ import {
   handleUserLogin,
   handleUserLogout,
   getCurrentUser,
+  updateAvatar,
   verifyEmail,
   resendEmailVerification,
   refreshAccessToken,
@@ -20,7 +21,7 @@ import {
   userResetPasswordValidator,
 } from "../validators/index.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { upload } from "../middlewares/multer.middleware.js";
+import { upload, uploadAvatar } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
@@ -51,6 +52,7 @@ router.post(
 // secured routes
 router.post("/logout", verifyJWT, handleUserLogout);
 router.get("/current-user", verifyJWT, getCurrentUser);
+router.put("/avatar", verifyJWT, uploadAvatar.single("avatar"), updateAvatar);
 router.post(
   "/change-password",
   verifyJWT,

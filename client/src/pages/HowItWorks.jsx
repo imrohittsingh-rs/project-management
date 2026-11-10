@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
-import { motion } from 'motion/react';
+import { motion as Motion } from 'motion/react';
 
 // 3D Pushpin component matching the pinned notecards in the reference
 const PushPin = ({ color }) => (
@@ -111,24 +111,24 @@ const HowItWorks = () => {
     <div className="min-h-screen bg-[#fafafa] text-[#171717] font-geist selection:bg-[#171717] selection:text-white">
       {/* Header section with refined fade-up */}
       <section className="border-b border-[#ebebeb] bg-[#fafafa] px-4 py-16 text-center sm:px-8">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto max-w-2xl"
         >
-          <motion.h1
+          <Motion.h1
             className="mt-4 text-3xl sm:text-5xl font-semibold tracking-tight text-[#171717]"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             How Projectub works
-          </motion.h1>
-          <motion.p className="mt-4 text-sm sm:text-base text-[#4d4d4d] leading-relaxed">
+          </Motion.h1>
+          <Motion.p className="mt-4 text-sm sm:text-base text-[#4d4d4d] leading-relaxed">
             From your first signup to full team delivery. A structured, transparent workflow designed to help teams execute with clarity.
-          </motion.p>
-        </motion.div>
+          </Motion.p>
+        </Motion.div>
       </section>
 
       {/* Main timeline with lined paper background */}
@@ -203,7 +203,7 @@ const HowItWorks = () => {
                 key={item.step}
                 className={`flex w-full justify-center ${item.position}`}
               >
-                <motion.div
+                <Motion.div
                   initial={{ opacity: 0, y: 30, scale: 0.96 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, margin: '-40px' }}
@@ -240,7 +240,7 @@ const HowItWorks = () => {
                       {item.description}
                     </p>
                   </div>
-                </motion.div>
+                </Motion.div>
               </div>
             ))}
           </div>
@@ -249,7 +249,7 @@ const HowItWorks = () => {
 
       {/* Call to action section */}
       <section className="border-t border-[#ebebeb] bg-[#fafafa] px-4 py-16 text-center sm:px-8">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -277,7 +277,7 @@ const HowItWorks = () => {
               Log In
             </Link>
           </div>
-        </motion.div>
+        </Motion.div>
       </section>
     </div>
   );

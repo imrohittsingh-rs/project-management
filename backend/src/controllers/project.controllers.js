@@ -137,7 +137,10 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 const addMemberToProject = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
-  const { email, role } = req.body;
+  const { email } = req.body;
+  const role = req.user.role === UserRoleEnum.PROJECT_ADMIN
+    ? UserRoleEnum.MEMBER
+    : req.body.role;
 
   const user = await User.findOne({ email });
 

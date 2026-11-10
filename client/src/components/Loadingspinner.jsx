@@ -1,67 +1,51 @@
-import React from 'react';
-import { motion } from 'motion/react';
-
-const Loadingspinner = ({ className = 'min-h-[70vh] w-full', size = 'md' }) => {
-  // Size presets
-  const sizeClasses = {
-    sm: 'w-2.5 h-2.5',
-    md: 'w-3.5 h-3.5',
-    lg: 'w-5 h-5',
-  };
-
-  const dotSize = sizeClasses[size] || sizeClasses.md;
-
-  const containerVariants = {
-    initial: {},
-    animate: {
-      transition: {
-        staggerChildren: 0.18,
-      },
-    },
-  };
-
-  const dotVariants = {
-    initial: {
-      x: -8,
-      scale: 0.8,
-      opacity: 0.25,
-    },
-    animate: {
-      x: [-8, 8, -8],
-      scale: [0.8, 1.25, 0.8],
-      opacity: [0.25, 1, 0.25],
-      transition: {
-        duration: 1.2,
-        repeat: Infinity,
-        ease: [0.45, 0, 0.55, 1],
-      },
-    },
-  };
-
-  return (
-    <div
-      className={`flex items-center justify-center ${className}`}
-      role="status"
-      aria-label="Loading"
+const Loadingspinner = ({ className = 'min-h-[70vh] w-full' }) => (
+  <div
+    className={`flex items-center justify-center text-[#171717] ${className}`}
+    role="status"
+    aria-label="Loading"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
     >
-      <motion.div
-        className="flex items-center gap-3"
-        variants={containerVariants}
-        initial="initial"
-        animate="animate"
-      >
-        {[0, 1, 2].map((i) => (
-          <motion.span
-            key={i}
-            variants={dotVariants}
-            className={`${dotSize} rounded-full bg-[#171717] inline-block`}
-          />
-        ))}
-      </motion.div>
-      <span className="sr-only">Loading...</span>
-    </div>
-  );
-};
+      <circle cx="4" cy="12" r="2" fill="currentColor">
+        <animate
+          id="loading-dot-one"
+          begin="0;loading-dot-three.end+0.25s"
+          attributeName="cy"
+          calcMode="spline"
+          dur="0.6s"
+          values="12;6;12"
+          keySplines=".33,.66,.66,1;.33,0,.66,.33"
+        />
+      </circle>
+      <circle cx="12" cy="12" r="2" fill="currentColor">
+        <animate
+          begin="loading-dot-one.begin+0.1s"
+          attributeName="cy"
+          calcMode="spline"
+          dur="0.6s"
+          values="12;6;12"
+          keySplines=".33,.66,.66,1;.33,0,.66,.33"
+        />
+      </circle>
+      <circle cx="20" cy="12" r="2" fill="currentColor">
+        <animate
+          id="loading-dot-three"
+          begin="loading-dot-one.begin+0.2s"
+          attributeName="cy"
+          calcMode="spline"
+          dur="0.6s"
+          values="12;6;12"
+          keySplines=".33,.66,.66,1;.33,0,.66,.33"
+        />
+      </circle>
+    </svg>
+  </div>
+)
 
-export { Loadingspinner as Loader };
-export default Loadingspinner;
+export { Loadingspinner as Loader }
+export default Loadingspinner

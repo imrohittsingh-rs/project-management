@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 // Inner layout component that reads location after Router is mounted
 const Layout = () => {
   const location = useLocation();
-  const isAppPage = ['/dashboard', '/projects', '/profile'].some(
+  const isAppPage = ['/dashboard', '/tasks', '/projects', '/profile', '/team'].some(
     (p) => location.pathname === p || location.pathname.startsWith(p + '/')
   );
 

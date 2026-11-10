@@ -11,7 +11,9 @@ import Dashboard from '../pages/Dashboard';
 import Workspace from '../pages/Workspace';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
+import Team from '../pages/Team';
 import ResetPassword from '../pages/ResetPassword';
+import AllTasks from '../pages/AllTasks';
 
 const AppRoutes = () => {
   return (
@@ -27,6 +29,8 @@ const AppRoutes = () => {
 
       {/* Protected app routes */}
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/tasks" element={<AllTasks />} />
+      <Route path="/team" element={<Team />} />
       <Route path="/projects/:projectId" element={<Workspace />} />
       <Route path="/profile" element={<Profile />} />
 

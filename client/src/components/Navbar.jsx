@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { motion as Motion } from 'motion/react';
 import {
   FiMenu,
   FiX,
@@ -21,6 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const isVerified = Boolean(user?.isEmailVerified);
+  const avatarUrl = user?.avatar?.url || (typeof user?.avatar === 'string' ? user.avatar : '');
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -68,8 +70,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-black/[0.06] bg-white/70 backdrop-blur-md transition-all shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-black/6 bg-white/70 backdrop-blur-md transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group focus:outline-none">
@@ -82,13 +84,25 @@ const Navbar = () => {
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 absolute left-1/2 -translate-x-1/2">
           {navlinks.map((link) => (
-            <Link
+            <NavLink
               key={link.name}
               to={link.to}
-              className="px-3 py-1.5 text-xs uppercase font-medium tracking-wide text-[#4d4d4d] hover:text-[#171717] rounded-md transition-colors"
             >
-              {link.name}
-            </Link>
+              {({ isActive }) => (
+                <span className="relative block rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-wide">
+                  {isActive && (
+                    <Motion.span
+                      layoutId="desktop-navbar-active-pill"
+                      className="absolute inset-0 rounded-full bg-[#f2f2f2]"
+                      transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                    />
+                  )}
+                  <span className={`relative z-10 transition-colors ${isActive ? 'text-[#171717]' : 'text-[#4d4d4d] hover:text-[#171717]'}`}>
+                    {link.name}
+                  </span>
+                </span>
+              )}
+            </NavLink>
           ))}
         </nav>
 
@@ -109,15 +123,15 @@ const Navbar = () => {
                 {/* Avatar with Verified / Unverified Ring & Badge on the Right */}
                 <div className="relative shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-full overflow-hidden p-[1.5px] transition-all ${
+                    className={`w-8 h-8 rounded-full overflow-hidden p-[1.5px] transition-colors ${
                       isVerified
                         ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
                         : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
                     }`}
                   >
-                    {user.avatar ? (
+                    {avatarUrl ? (
                       <img
-                        src={user.avatar}
+                        src={avatarUrl}
                         alt={user.fullName || user.username}
                         className="w-full h-full rounded-full object-cover"
                       />
@@ -212,13 +226,13 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="px-3.5 py-1.5 text-xs uppercase font-semibold tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-[6px] transition-all shadow-2xs"
+                className="px-3.5 py-1.5 text-xs uppercase font-semibold tracking-wider text-[#171717] bg-white border border-[#ebebeb] hover:border-[#d4d4d4] hover:bg-[#f9f9f9] rounded-md transition-colors shadow-2xs"
               >
                 Log In
               </Link>
               <Link
                 to="/signup"
-                className="px-3.5 py-1.5 text-xs uppercase font-semibold tracking-wider text-white bg-[#171717] hover:bg-[#2e2e2e] rounded-[6px] transition-all shadow-xs"
+                className="px-3.5 py-1.5 text-xs uppercase font-semibold tracking-wider text-white bg-[#171717] hover:bg-[#2e2e2e] rounded-md transition-colors shadow-xs"
               >
                 Sign Up
               </Link>
@@ -231,8 +245,10 @@ const Navbar = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#4d4d4d] hover:text-[#171717] rounded-md focus:outline-none"
+            className="flex h-11 w-11 items-center justify-center rounded-md text-[#4d4d4d] transition-colors hover:bg-[#fafafa] hover:text-[#171717] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0070f3]"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
           </button>
@@ -241,21 +257,21 @@ const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-black/[0.06] bg-white/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3">
+        <div id="mobile-navigation" className="md:hidden border-t border-black/6 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3">
           {/* User profile banner on mobile */}
           {user && (
             <div className="flex items-center gap-3 p-3 bg-[#fafafa] border border-[#ebebeb] rounded-lg mb-2">
               <div className="relative shrink-0">
                 <div
-                  className={`w-9 h-9 rounded-full overflow-hidden p-[2px] transition-all ${
+                  className={`w-9 h-9 rounded-full overflow-hidden p-[2px] transition-colors ${
                     isVerified
                       ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
                       : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
                   }`}
                 >
-                  {user.avatar ? (
+                  {avatarUrl ? (
                     <img
-                      src={user.avatar}
+                      src={avatarUrl}
                       alt={user.fullName || user.username}
                       className="w-full h-full rounded-full object-cover"
                     />
@@ -298,7 +314,7 @@ const Navbar = () => {
                 <Link
                   to="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                  className="flex min-h-11 items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-[#18181b] transition-colors hover:bg-black/4"
                 >
                   <FiUser className="w-4 h-4 text-[#71717a]" />
                   <span>Profile</span>
@@ -306,7 +322,7 @@ const Navbar = () => {
                 <Link
                   to="/pricing"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                  className="flex min-h-11 items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-[#18181b] transition-colors hover:bg-black/4"
                 >
                   <div className="flex items-center gap-2.5">
                     <FiCreditCard className="w-4 h-4 text-[#71717a]" />
@@ -316,7 +332,7 @@ const Navbar = () => {
                 <Link
                   to="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-[#18181b] hover:bg-black/[0.04] rounded-md transition-colors"
+                  className="flex min-h-11 items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-[#18181b] transition-colors hover:bg-black/4"
                 >
                   <FiSettings className="w-4 h-4 text-[#71717a]" />
                   <span>Settings</span>
@@ -324,27 +340,28 @@ const Navbar = () => {
                 <div className="border-t border-[#ebebeb] my-1 pt-1" />
               </>
             )}
-            <Link
-              to="/features"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 text-xs uppercase font-medium tracking-wide text-[#4d4d4d] hover:text-[#171717] rounded-md hover:bg-white"
-            >
-              Features
-            </Link>
-            <Link
-              to="/pricing"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 text-xs uppercase font-medium tracking-wide text-[#4d4d4d] hover:text-[#171717] rounded-md hover:bg-white"
-            >
-              Pricing
-            </Link>
-            <Link
-              to="/how-it-works"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 text-xs uppercase font-medium tracking-wide text-[#4d4d4d] hover:text-[#171717] rounded-md hover:bg-white"
-            >
-              How it works
-            </Link>
+            {navlinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.to}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {({ isActive }) => (
+                  <span className="relative flex min-h-11 items-center rounded-full px-3 py-2 text-xs font-medium uppercase tracking-wide">
+                    {isActive && (
+                      <Motion.span
+                        layoutId="mobile-navbar-active-pill"
+                        className="absolute inset-0 rounded-full bg-[#f2f2f2]"
+                        transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                      />
+                    )}
+                    <span className={`relative z-10 ${isActive ? 'text-[#171717]' : 'text-[#4d4d4d]'}`}>
+                      {link.name}
+                    </span>
+                  </span>
+                )}
+              </NavLink>
+            ))}
           </div>
 
           <div className="pt-3 border-t border-[#ebebeb] flex flex-col gap-2">
@@ -352,7 +369,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-medium text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] rounded-xl transition-colors cursor-pointer"
+                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#fef2f2] py-2.5 text-xs font-medium text-[#ef4444] transition-colors hover:bg-[#fee2e2]"
               >
                 <FiLogOut className="w-4 h-4" />
                 <span>Sign Out</span>
@@ -362,14 +379,14 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-xs uppercase font-semibold tracking-wider text-[#171717] bg-white border border-[#ebebeb] rounded-md"
+                  className="flex min-h-11 w-full items-center justify-center rounded-md border border-[#ebebeb] bg-white py-2 text-xs font-semibold uppercase tracking-wider text-[#171717]"
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-xs uppercase font-semibold tracking-wider text-white bg-[#171717] rounded-md"
+                  className="flex min-h-11 w-full items-center justify-center rounded-md bg-[#171717] py-2 text-xs font-semibold uppercase tracking-wider text-white"
                 >
                   Sign Up
                 </Link>

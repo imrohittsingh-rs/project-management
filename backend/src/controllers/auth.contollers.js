@@ -9,6 +9,8 @@ import {
 } from "../utils/mail.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 // Generate access and refresh tokens for a user
 const generateAccessAndRefreshToken = async (userId) => {
@@ -195,6 +197,38 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, { user }, "Current user fetched successfully"));
+});
+
+const updateAvatar = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(400, "Please select an image file no larger than 1 MB");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const previousLocalPath = user.avatar?.localPath;
+  user.avatar = {
+    url: `${process.env.SERVER_URL}/images/${req.file.filename}`,
+    localPath: req.file.path,
+  };
+  await user.save({ validateBeforeSave: false });
+
+  if (previousLocalPath) {
+    const previousFilename = path.basename(previousLocalPath);
+    if (previousFilename && previousFilename !== req.file.filename) {
+      await fs.unlink(path.resolve("public/images", previousFilename)).catch(() => {});
+    }
+  }
+
+  const updatedUser = await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
+  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { user: updatedUser }, "Profile picture updated successfully"));
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
@@ -415,6 +449,7 @@ export {
   handleUserLogin,
   handleUserLogout,
   getCurrentUser,
+  updateAvatar,
   verifyEmail,
   resendEmailVerification,
   refreshAccessToken,

@@ -38,9 +38,13 @@ app.get("/", (req, res) => {
 
 // Error handler middleware
 app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).json({
+  const statusCode = err.statusCode || (err.code === "LIMIT_FILE_SIZE" ? 413 : 500);
+  const message = err.code === "LIMIT_FILE_SIZE"
+    ? "Uploaded file must be 1 MB or smaller"
+    : err.message;
+  res.status(statusCode).json({
     success: false,
-    message: err.message,
+    message,
     errors: err.errors || [],
   });
 });

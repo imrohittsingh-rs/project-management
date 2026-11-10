@@ -20,6 +20,11 @@ export const getCurrentUser = async () => {
     return res.data;
 }
 
+export const updateAvatar = async (formData) => {
+    const res = await api.put("/auth/avatar", formData);
+    return res.data;
+}
+
 export const changePassword = async (passwordData) => {
     const res = await api.post("/auth/change-password", passwordData);
     return res.data;

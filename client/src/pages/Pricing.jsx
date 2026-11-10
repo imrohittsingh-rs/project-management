@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiCheck, FiArrowRight } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion as Motion, AnimatePresence } from 'motion/react';
 import PlanComparisonTable from '../components/PlanComparisonTable';
 
 const Pricing = () => {
@@ -80,7 +80,7 @@ const Pricing = () => {
     <div className="min-h-screen bg-[#fafafa] text-[#171717] font-geist selection:bg-[#171717] selection:text-white">
       {/* Header section */}
       <section className="px-4 pt-16 pb-12 text-center sm:px-8">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -118,7 +118,7 @@ const Pricing = () => {
               <span className="text-[#16a34a] font-semibold">(Save 20%)</span>
             </span>
           </div>
-        </motion.div>
+        </Motion.div>
       </section>
 
       {/* Pricing Cards Section */}
@@ -128,7 +128,7 @@ const Pricing = () => {
             const currentPrice = isAnnual ? plan.priceAnnual : plan.priceMonthly;
 
             return (
-              <motion.div
+              <Motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -165,7 +165,7 @@ const Pricing = () => {
                       <span className="text-5xl font-extrabold tracking-tight text-[#171717]">
                         $
                         <AnimatePresence mode="wait">
-                          <motion.span
+                          <Motion.span
                             key={currentPrice}
                             initial={{ opacity: 0, y: -6 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,7 @@ const Pricing = () => {
                             transition={{ duration: 0.2 }}
                           >
                             {currentPrice}
-                          </motion.span>
+                          </Motion.span>
                         </AnimatePresence>
                       </span>
                       <span className="text-xs sm:text-sm text-[#737373] font-normal">
@@ -216,7 +216,7 @@ const Pricing = () => {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </Motion.div>
             );
           })}
         </div>

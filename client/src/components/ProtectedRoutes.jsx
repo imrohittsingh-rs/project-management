@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loadingspinner from "./Loadingspinner";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/projects", "/profile"];
+const PROTECTED_PREFIXES = ["/dashboard", "/tasks", "/projects", "/profile", "/team"];
 
 const ProtectedRoutes = ({ children }) => {
   const { loading, user } = useAuth();
