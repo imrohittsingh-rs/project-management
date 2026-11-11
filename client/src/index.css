@@ -27,6 +27,16 @@
   box-sizing: border-box;
 }
 
+::selection {
+  background-color: #171717;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #171717;
+  color: #ffffff;
+}
+
 body {
   margin: 0;
   font-family: var(--font-geist);

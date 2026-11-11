@@ -77,7 +77,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#171717] font-geist selection:bg-[#171717] selection:text-white">
+    <div className="min-h-screen bg-[#fafafa] text-[#171717] font-geist">
       {/* Header section */}
       <section className="px-4 pt-16 pb-12 text-center sm:px-8">
         <Motion.div

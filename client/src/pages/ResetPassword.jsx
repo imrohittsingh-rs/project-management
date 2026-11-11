@@ -32,7 +32,9 @@ const ResetPassword = () => {
       setSuccess(true);
       toast.success("Password reset successfully. You can sign in now.");
     } catch (err) {
-      const message = err?.response?.data?.message || "This reset link is invalid or has expired.";
+      const message =
+        err?.response?.data?.message ||
+        "This reset link is invalid or has expired.";
       toast.error(message);
     } finally {
       setSaving(false);

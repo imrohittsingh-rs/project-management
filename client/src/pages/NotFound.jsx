@@ -10,7 +10,7 @@ const suggestions = [
 
 const NotFound = () => {
   return (
-    <div className="fixed inset-0 z-50 bg-[#0a0a0a] overflow-y-auto flex flex-col items-center justify-center px-4 py-12 text-center font-geist selection:bg-neutral-800 selection:text-white">
+    <div className="fixed inset-0 z-50 bg-[#0a0a0a] overflow-y-auto flex flex-col items-center justify-center px-4 py-12 text-center font-geist">
       <div className="flex flex-col items-center max-w-md w-full">
 
         <span className="text-7xl sm:text-8xl md:text-9xl font-bold tracking-tight text-[#4a4a4a] select-none leading-none">

@@ -199,6 +199,7 @@ const Profile = () => {
       });
       toast.success("Password changed successfully");
       setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      setPasswordTouched({});
     } catch (err) {
       setPwError(err?.response?.data?.message || "Failed to change password.");
     } finally {

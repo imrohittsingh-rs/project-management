@@ -173,7 +173,7 @@ export default function Signup() {
   // Success state: Verification email sent
   if (successData) {
     return (
-      <div className="min-h-screen w-full bg-[#fafafa] flex items-center justify-center p-4 selection:bg-[#d3e5ff] selection:text-[#0761d1]">
+      <div className="min-h-screen w-full bg-[#fafafa] flex items-center justify-center p-4">
         <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-5 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
           <div className="flex flex-col items-center text-center">
             <div className="w-12 h-12 rounded-[8px] bg-[#f2f2f2] border border-[#ebebeb] flex items-center justify-center text-[#171717] mb-5">
@@ -210,7 +210,7 @@ export default function Signup() {
               <button
                 type="button"
                 onClick={handleGoToLogin}
-                className="w-full h-10 px-4 bg-[#171717] hover:bg-[#262626] active:bg-[#000000] text-white text-sm font-medium rounded-[6px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full h-10 px-4 bg-[#171717] hover:bg-[#262626] active:bg-[#000000] text-white text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 Continue to sign in
                 <FiArrowRight className="w-4 h-4" />
@@ -235,7 +235,7 @@ export default function Signup() {
                     confirmPassword: false
                   });
                 }}
-                className="w-full h-10 px-4 bg-white hover:bg-[#fafafa] text-[#4d4d4d] hover:text-[#171717] border border-[#ebebeb] text-sm font-medium rounded-[6px] transition-colors cursor-pointer"
+                className="w-full h-10 px-4 bg-white hover:bg-[#fafafa] text-[#4d4d4d] hover:text-[#171717] border border-[#ebebeb] text-sm font-medium rounded-md transition-colors cursor-pointer"
               >
                 Register another account
               </button>
@@ -247,10 +247,10 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#fafafa] flex flex-col justify-center items-center py-12 px-4 selection:bg-[#d3e5ff] selection:text-[#0761d1]">
+    <div className="min-h-screen w-full bg-[#fafafa] flex flex-col justify-center items-center py-12 px-4">
 
       {/* Main Card */}
-      <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-[12px] p-5 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
+      <div className="w-full max-w-[440px] bg-white border border-[#ebebeb] rounded-xl p-5 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
         <div className="mb-6">
           <h1 className="text-3xl text-center font-semibold text-[#171717] tracking-[-0.6px] mb-1.5">
             Your first project <br /> is just a sign-up away.
@@ -286,7 +286,7 @@ export default function Signup() {
                   errors.fullName
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-md placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
               />
             </div>
             {errors.fullName && (
@@ -326,7 +326,7 @@ export default function Signup() {
                   errors.username
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-md placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
               />
             </div>
             {errors.username ? (
@@ -368,7 +368,7 @@ export default function Signup() {
                   errors.email
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-md placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
               />
             </div>
             {errors.email && (
@@ -406,7 +406,7 @@ export default function Signup() {
                   errors.password
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-md placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
               />
               <button
                 type="button"
@@ -425,7 +425,7 @@ export default function Signup() {
 
             {/* Password Requirement Indicators */}
             {formData.password && (
-              <div className="mt-2.5 p-2.5 bg-[#fafafa] border border-[#ebebeb] rounded-[6px] space-y-1.5 text-xs text-[#4d4d4d]">
+              <div className="mt-2.5 p-2.5 bg-[#fafafa] border border-[#ebebeb] rounded-md space-y-1.5 text-xs text-[#4d4d4d]">
                 <div className="flex items-center gap-1.5">
                   <FaCircleCheck className={`w-3.5 h-3.5 shrink-0 overflow-visible transition-colors ${checks.length ? "text-emerald-500" : "text-gray-300"}`} />
                   <span>8 characters</span>
@@ -478,7 +478,7 @@ export default function Signup() {
                   errors.confirmPassword
                     ? "border-[#ee0000] focus:border-[#ee0000] focus:ring-[#fee2e2]"
                     : "border-[#ebebeb] focus:border-[#0070f3] focus:ring-[#d3e5ff]"
-                } rounded-[6px] placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
+                } rounded-md placeholder:text-[#a1a1a1] focus:outline-none focus:ring-2 transition-all`}
               />
               <button
                 type="button"
@@ -504,7 +504,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-10 mt-2 bg-[#171717] hover:bg-[#262626] active:bg-[#000000] text-white text-sm font-medium rounded-[6px] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
+            className="w-full h-10 mt-2 bg-[#171717] hover:bg-[#262626] active:bg-[#000000] text-white text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
           >
             {isSubmitting ? (
               <>
