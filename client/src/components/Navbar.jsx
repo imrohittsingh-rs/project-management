@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { motion as Motion } from 'motion/react';
+import React, { useState, useRef, useEffect } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { motion as Motion } from "motion/react";
 import {
   FiMenu,
   FiX,
@@ -9,10 +9,9 @@ import {
   FiCheck,
   FiCreditCard,
   FiSettings,
-  FiFileText,
-} from 'react-icons/fi';
+} from "react-icons/fi";
 import logo from "../assets/logo.png";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,7 +21,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const isVerified = Boolean(user?.isEmailVerified);
-  const avatarUrl = user?.avatar?.url || (typeof user?.avatar === 'string' ? user.avatar : '');
+  const avatarUrl =
+    user?.avatar?.url || (typeof user?.avatar === "string" ? user.avatar : "");
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -50,6 +50,7 @@ const Navbar = () => {
     ...(user ? [{ name: "Dashboard", to: "/dashboard" }] : []),
     { name: "Features", to: "/features" },
     { name: "Pricing", to: "/pricing" },
+    { name: "Contact", to: "/contact" },
   ];
 
   // Helper to extract initials
@@ -71,10 +72,16 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black/6 bg-white/70 backdrop-blur-md transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group focus:outline-none">
-          <img src={logo} alt="Projectub" className="w-10 h-10 object-contain" />
+        <Link
+          to="/"
+          className="flex items-center gap-2.5 group focus:outline-none"
+        >
+          <img
+            src={logo}
+            alt="Projectub"
+            className="w-10 h-10 object-contain"
+          />
           <span className="font-geist font-semibold tracking-wider text-base sm:text-lg uppercase text-[#171717]">
             Projectub
           </span>
@@ -83,20 +90,23 @@ const Navbar = () => {
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 absolute left-1/2 -translate-x-1/2">
           {navlinks.map((link) => (
-            <NavLink
-              key={link.name}
-              to={link.to}
-            >
+            <NavLink key={link.name} to={link.to}>
               {({ isActive }) => (
                 <span className="relative block rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-wide">
                   {isActive && (
                     <Motion.span
                       layoutId="desktop-navbar-active-pill"
                       className="absolute inset-0 rounded-full bg-[#f2f2f2]"
-                      transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 30,
+                      }}
                     />
                   )}
-                  <span className={`relative z-10 transition-colors ${isActive ? 'text-[#171717]' : 'text-[#4d4d4d] hover:text-[#171717]'}`}>
+                  <span
+                    className={`relative z-10 transition-colors ${isActive ? "text-[#171717]" : "text-[#4d4d4d] hover:text-[#171717]"}`}
+                  >
                     {link.name}
                   </span>
                 </span>
@@ -118,14 +128,13 @@ const Navbar = () => {
                 aria-haspopup="true"
                 id="profile-menu-button"
               >
-
                 {/* Avatar with Verified / Unverified Ring & Badge on the Right */}
                 <div className="relative shrink-0">
                   <div
                     className={`w-8 h-8 rounded-full overflow-hidden p-[1.5px] transition-colors ${
                       isVerified
-                        ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
-                        : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
+                        ? "ring-2 ring-[#0d9488] ring-offset-1 bg-white"
+                        : "ring-2 ring-amber-500 ring-offset-1 bg-white"
                     }`}
                   >
                     {avatarUrl ? (
@@ -154,7 +163,9 @@ const Navbar = () => {
                       title="Email not verified"
                       className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-amber-500 border-[1.5px] border-white flex items-center justify-center shadow-xs"
                     >
-                      <span className="text-[8px] font-bold text-white leading-none">!</span>
+                      <span className="text-[8px] font-bold text-white leading-none">
+                        !
+                      </span>
                     </div>
                   )}
                 </div>
@@ -249,14 +260,21 @@ const Navbar = () => {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
           >
-            {mobileMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+            {mobileMenuOpen ? (
+              <FiX className="w-5 h-5" />
+            ) : (
+              <FiMenu className="w-5 h-5" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div id="mobile-navigation" className="md:hidden border-t border-black/6 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3">
+        <div
+          id="mobile-navigation"
+          className="md:hidden border-t border-black/6 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3"
+        >
           {/* User profile banner on mobile */}
           {user && (
             <div className="flex items-center gap-3 p-3 bg-[#fafafa] border border-[#ebebeb] rounded-lg mb-2">
@@ -264,8 +282,8 @@ const Navbar = () => {
                 <div
                   className={`w-9 h-9 rounded-full overflow-hidden p-[2px] transition-colors ${
                     isVerified
-                      ? 'ring-2 ring-[#0d9488] ring-offset-1 bg-white'
-                      : 'ring-2 ring-amber-500 ring-offset-1 bg-white'
+                      ? "ring-2 ring-[#0d9488] ring-offset-1 bg-white"
+                      : "ring-2 ring-amber-500 ring-offset-1 bg-white"
                   }`}
                 >
                   {avatarUrl ? (
@@ -292,7 +310,9 @@ const Navbar = () => {
                     title="Email not verified"
                     className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center shadow-xs"
                   >
-                    <span className="text-[9px] font-bold text-white leading-none">!</span>
+                    <span className="text-[9px] font-bold text-white leading-none">
+                      !
+                    </span>
                   </div>
                 )}
               </div>
@@ -302,7 +322,9 @@ const Navbar = () => {
                     {user.fullName || user.username}
                   </p>
                 </div>
-                <p className="text-[11px] text-[#8f8f8f] truncate">{user.email}</p>
+                <p className="text-[11px] text-[#8f8f8f] truncate">
+                  {user.email}
+                </p>
               </div>
             </div>
           )}
@@ -351,10 +373,16 @@ const Navbar = () => {
                       <Motion.span
                         layoutId="mobile-navbar-active-pill"
                         className="absolute inset-0 rounded-full bg-[#f2f2f2]"
-                        transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 420,
+                          damping: 30,
+                        }}
                       />
                     )}
-                    <span className={`relative z-10 ${isActive ? 'text-[#171717]' : 'text-[#4d4d4d]'}`}>
+                    <span
+                      className={`relative z-10 ${isActive ? "text-[#171717]" : "text-[#4d4d4d]"}`}
+                    >
                       {link.name}
                     </span>
                   </span>
