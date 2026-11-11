@@ -82,14 +82,20 @@ const handleUserRegister = asyncHandler(async (req, res) => {
 
   await user.save({ validateBeforeSave: false });
 
-  await sendEmail({
-    email: user.email,
-    subject: "Please verify your email",
-    mailgenContent: emailVerificationMailgenContent(
-      user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
-    ),
-  });
+  let emailSent = true;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Please verify your email",
+      mailgenContent: emailVerificationMailgenContent(
+        user.username,
+        `${serverUrl}/api/v1/auth/verify-email/${unHashedToken}`,
+      ),
+    });
+  } catch (error) {
+    emailSent = false;
+    console.error("User registered, but verification email failed:", error);
+  }
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
@@ -100,12 +106,13 @@ const handleUserRegister = asyncHandler(async (req, res) => {
   }
 
   return res
-    .status(201)
+    .status(emailSent ? 201 : 202)
     .json(
       new ApiResponse(
-        201,
-        { user: createdUser },
-        "User registered successfully and verification email has been sent on your email.",
+        { user: createdUser, emailSent },
+        emailSent
+          ? "User registered successfully and verification email has been sent on your email."
+          : "User registered successfully, but we could not send the verification email. Please sign in and resend it.",
       ),
     );
 });
@@ -305,14 +312,22 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
   user.emailVerificationExpiry = tokenExpiry;
   await user.save({ validateBeforeSave: false });
 
-  await sendEmail({
-    email: user.email,
-    subject: "Please verify your email",
-    mailgenContent: emailVerificationMailgenContent(
-      user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
-    ),
-  });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Please verify your email",
+      mailgenContent: emailVerificationMailgenContent(
+        user.username,
+        `${serverUrl}/api/v1/auth/verify-email/${unHashedToken}`,
+      ),
+    });
+  } catch (error) {
+    console.error("Verification email resend failed:", error);
+    throw new ApiError(
+      503,
+      "Your verification token was refreshed, but the email service is temporarily unavailable. Please try again later.",
+    );
+  }
 
   return res
     .status(200)

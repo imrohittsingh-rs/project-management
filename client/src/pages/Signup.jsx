@@ -153,6 +153,7 @@ export default function Signup() {
       setSuccessData({
         email: payload.email,
         username: payload.username,
+        emailSent: response?.data?.emailSent !== false,
         message:
           response?.message ||
           "Registration successful. A verification link has been sent to your email."
@@ -188,8 +189,25 @@ export default function Signup() {
             </h1>
 
             <p className="text-sm text-[#4d4d4d] leading-relaxed mb-6">
-              We sent a verification link to{" "}
-              <span className="font-medium text-[#171717]">{successData.email}</span>. Please click the link in your email to activate your account and get started.
+              {successData.emailSent ? (
+                <>
+                  We sent a verification link to{" "}
+                  <span className="font-medium text-[#171717]">
+                    {successData.email}
+                  </span>
+                  . Please click the link in your email to activate your account
+                  and get started.
+                </>
+              ) : (
+                <>
+                  Your account was created, but we could not send a verification
+                  link to{" "}
+                  <span className="font-medium text-[#171717]">
+                    {successData.email}
+                  </span>
+                  . Sign in and use the resend verification option.
+                </>
+              )}
             </p>
 
             <div className="w-full border-t border-[#ebebeb] pt-6 space-y-3">
