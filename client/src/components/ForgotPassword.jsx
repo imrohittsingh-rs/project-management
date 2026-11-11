@@ -128,7 +128,7 @@ const ForgotPassword = ({
             <button
               type="submit"
               disabled={isSending}
-              className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#171717] text-sm font-medium text-white transition-colors hover:bg-[#262626] focus:outline-none focus:ring-2 focus:ring-[#a1a1a1] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#171717] text-sm font-medium text-white transition-colors hover:bg-[#262626] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSending ? (
                 <>
