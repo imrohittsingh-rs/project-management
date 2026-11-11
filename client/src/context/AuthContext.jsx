@@ -4,6 +4,7 @@ import {
   useEffect,
   useState
 } from "react";
+import toast from "../utils/toast.js";
 
 import {
   login as loginService,
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         await logoutService();
         setUser(null);
+        toast.success("Signed out successfully");
     }
 
     const getCurrentUser = async () => {

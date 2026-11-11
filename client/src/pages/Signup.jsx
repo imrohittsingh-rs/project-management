@@ -7,13 +7,13 @@ import {
   FiLock,
   FiEye,
   FiEyeOff,
-  FiAlertCircle,
   FiLoader,
   FiArrowRight,
   FiCheckCircle
 } from "react-icons/fi";
 import { FaCircleCheck } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext.jsx";
+import toast from "../utils/toast.js";
 
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,7 +41,6 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [serverError, setServerError] = useState("");
   const [successData, setSuccessData] = useState(null);
 
   const handleChange = (e) => {
@@ -54,9 +53,6 @@ export default function Signup() {
       [name]: nextVal
     }));
 
-    if (serverError) {
-      setServerError("");
-    }
   };
 
   const handleBlur = (e) => {
@@ -138,7 +134,6 @@ export default function Signup() {
     }
 
     setIsSubmitting(true);
-    setServerError("");
 
     try {
       const payload = {
@@ -149,6 +144,7 @@ export default function Signup() {
       };
 
       const response = await register(payload);
+      toast.success("Account created. Check your email for the verification link.");
 
       setSuccessData({
         email: payload.email,
@@ -164,7 +160,7 @@ export default function Signup() {
         err?.response?.data?.errors?.[0]?.msg ||
         err?.message ||
         "An unexpected error occurred during registration. Please try again.";
-      setServerError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -260,17 +256,6 @@ export default function Signup() {
             Your first project <br /> is just a sign-up away.
           </h1>
         </div>
-
-        {/* Server Error Alert */}
-        {serverError && (
-          <div
-            role="alert"
-            className="mb-5 p-3 rounded-[6px] bg-[#fff5f5] border border-[#fecaca] text-[#c50000] text-sm flex items-start gap-2.5 leading-snug"
-          >
-            <FiAlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-[#ee0000]" />
-            <div className="flex-1 text-xs sm:text-sm">{serverError}</div>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {/* Full Name Field */}

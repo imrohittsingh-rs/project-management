@@ -13,6 +13,7 @@ import {
   FiArrowLeft
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext.jsx";
+import toast from "../utils/toast.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
@@ -38,7 +39,6 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [serverError, setServerError] = useState("");
 
   // Forgot password sub-state
   const [showForgotModal, setShowForgotModal] = useState(false);
@@ -50,12 +50,10 @@ export default function Login() {
 
   const handleIdentifierChange = (e) => {
     setIdentifier(e.target.value);
-    if (serverError) setServerError("");
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (serverError) setServerError("");
   };
 
   const handleBlur = (field) => {
@@ -106,7 +104,6 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
-    setServerError("");
 
     try {
       // Build credentials object according to whether identifier is email or username
@@ -121,6 +118,7 @@ export default function Login() {
       };
 
       await login(payload);
+      toast.success("Signed in successfully");
       navigate("/dashboard");
     } catch (err) {
       const message =
@@ -128,7 +126,7 @@ export default function Login() {
         err?.response?.data?.errors?.[0]?.msg ||
         err?.message ||
         "Invalid username/email or password. Please try again.";
-      setServerError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -150,6 +148,7 @@ export default function Login() {
       const response = await forgotPassword({ email: forgotEmail.trim().toLowerCase() });
       const msg = response?.message || "Password reset instructions sent to your email.";
       setForgotSuccessMessage(msg);
+      toast.success(msg);
     } catch (err) {
       const msg =
         err?.response?.data?.message ||
@@ -281,17 +280,6 @@ export default function Login() {
             Sign in to Project Camp
           </h1>
         </div>
-
-        {/* Server Error Alert */}
-        {serverError && (
-          <div
-            role="alert"
-            className="mb-5 p-3 rounded-[6px] bg-[#fff5f5] border border-[#fecaca] text-[#c50000] text-sm flex items-start gap-2.5 leading-snug"
-          >
-            <FiAlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-[#ee0000]" />
-            <div className="flex-1 text-xs sm:text-sm">{serverError}</div>
-          </div>
-        )}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} noValidate className="space-y-4">

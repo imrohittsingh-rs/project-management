@@ -30,6 +30,7 @@ import { FaTasks } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
 import { RiProgress5Line } from "react-icons/ri";
 import { IoMdDoneAll } from "react-icons/io";
+import toast from "../../utils/toast.js";
 
 const TasksTab = ({ projectId, members, userRole }) => {
   const [tasks, setTasks] = useState([]);
@@ -99,8 +100,9 @@ const TasksTab = ({ projectId, members, userRole }) => {
       setNewTask({ title: "", description: "", assignedTo: "" });
       setShowNewTask(false);
       await loadTasks();
+      toast.success("Task created");
     } catch (err) {
-      setError(err?.response?.data?.message || "Failed to create task");
+      toast.error(err?.response?.data?.message || "Failed to create task");
     } finally {
       setSubmitting(false);
     }
@@ -148,7 +150,7 @@ const TasksTab = ({ projectId, members, userRole }) => {
         prev.map((t) => (t._id === task._id ? { ...t, status } : t)),
       );
     } catch {
-      setError("Failed to update status");
+      toast.error("Failed to update task status");
     }
   };
 
@@ -157,13 +159,14 @@ const TasksTab = ({ projectId, members, userRole }) => {
     try {
       await deleteTask(projectId, taskId);
       setTasks((prev) => prev.filter((t) => t._id !== taskId));
+      toast.success("Task deleted");
       setTaskDetails((prev) => {
         const n = { ...prev };
         delete n[taskId];
         return n;
       });
     } catch {
-      setError("Failed to delete task");
+      toast.error("Failed to delete task");
     }
   };
 
@@ -180,8 +183,9 @@ const TasksTab = ({ projectId, members, userRole }) => {
         return n;
       });
       await loadTaskDetail(taskId, true);
+      toast.success("Subtask created");
     } catch (err) {
-      setError(err?.response?.data?.message || "Failed to create subtask");
+      toast.error(err?.response?.data?.message || "Failed to create subtask");
     }
   };
 
@@ -202,8 +206,9 @@ const TasksTab = ({ projectId, members, userRole }) => {
           ),
         },
       }));
+      toast.success(subTask.isCompleted ? "Subtask reopened" : "Subtask completed");
     } catch {
-      setError("Failed to update subtask");
+      toast.error("Failed to update subtask");
     }
   };
 
@@ -219,8 +224,9 @@ const TasksTab = ({ projectId, members, userRole }) => {
           ),
         },
       }));
+      toast.success("Subtask deleted");
     } catch {
-      setError("Failed to delete subtask");
+      toast.error("Failed to delete subtask");
     }
   };
 

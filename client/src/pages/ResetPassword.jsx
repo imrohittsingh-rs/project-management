@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FiAlertCircle, FiCheckCircle, FiLoader, FiLock } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import toast from "../utils/toast.js";
 
 const ResetPassword = () => {
   const { resetToken } = useParams();
@@ -29,11 +30,10 @@ const ResetPassword = () => {
     try {
       await resetPassword(resetToken, password);
       setSuccess(true);
+      toast.success("Password reset successfully. You can sign in now.");
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          "This reset link is invalid or has expired.",
-      );
+      const message = err?.response?.data?.message || "This reset link is invalid or has expired.";
+      toast.error(message);
     } finally {
       setSaving(false);
     }

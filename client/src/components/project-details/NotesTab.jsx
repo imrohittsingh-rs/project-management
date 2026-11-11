@@ -9,6 +9,7 @@ import {
 } from "../../services/noteService";
 import Loader from "../Loadingspinner";
 import { ActionBtn, Textarea } from "./shared";
+import toast from "../../utils/toast.js";
 
 const NotesTab = ({ projectId, userRole }) => {
   const [notes, setNotes] = useState([]);
@@ -62,8 +63,9 @@ const NotesTab = ({ projectId, userRole }) => {
       setEditingNote(null);
       setDraft("");
       await loadNotes();
+      toast.success(editingNote === "new" ? "Note created" : "Note updated");
     } catch {
-      setError("Failed to save note");
+      toast.error("Failed to save note");
     } finally {
       setSubmitting(false);
     }
@@ -74,8 +76,9 @@ const NotesTab = ({ projectId, userRole }) => {
     try {
       await deleteNote(projectId, noteId);
       setNotes((prev) => prev.filter((n) => n._id !== noteId));
+      toast.success("Note deleted");
     } catch {
-      setError("Failed to delete note");
+      toast.error("Failed to delete note");
     }
   };
 

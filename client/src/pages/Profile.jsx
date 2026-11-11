@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import { FaCircleCheck } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext";
+import toast from "../utils/toast.js";
 
 const PasswordInput = ({
   id,
@@ -89,12 +90,9 @@ const Profile = () => {
   const [passwordTouched, setPasswordTouched] = useState({});
   const [saving, setSaving] = useState(false);
   const [pwError, setPwError] = useState("");
-  const [pwSuccess, setPwSuccess] = useState("");
   const [resending, setResending] = useState(false);
-  const [resendMsg, setResendMsg] = useState("");
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [avatarError, setAvatarError] = useState("");
-  const [avatarSuccess, setAvatarSuccess] = useState("");
 
   const avatarUrl =
     user?.avatar?.url || (typeof user?.avatar === "string" ? user.avatar : "");
@@ -131,7 +129,6 @@ const Profile = () => {
   const handlePasswordFieldChange = (field, value) => {
     setPasswords((current) => ({ ...current, [field]: value }));
     setPwError("");
-    setPwSuccess("");
   };
 
   const handleAvatarChange = async (event) => {
@@ -139,7 +136,6 @@ const Profile = () => {
     if (!file) return;
 
     setAvatarError("");
-    setAvatarSuccess("");
     if (!file.type.startsWith("image/")) {
       setAvatarError("Choose an image file.");
       event.target.value = "";
@@ -156,7 +152,7 @@ const Profile = () => {
     setAvatarBusy(true);
     try {
       await updateAvatar(formData);
-      setAvatarSuccess("Profile picture updated.");
+      toast.success("Profile picture updated");
     } catch (err) {
       setAvatarError(
         err?.response?.data?.message || "Unable to update profile picture.",
@@ -181,7 +177,6 @@ const Profile = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setPwError("");
-    setPwSuccess("");
 
     setPasswordTouched({
       oldPassword: true,
@@ -202,7 +197,7 @@ const Profile = () => {
         oldPassword: passwords.oldPassword,
         newPassword: passwords.newPassword,
       });
-      setPwSuccess("Password changed successfully.");
+      toast.success("Password changed successfully");
       setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
       setPwError(err?.response?.data?.message || "Failed to change password.");
@@ -213,14 +208,11 @@ const Profile = () => {
 
   const handleResendVerification = async () => {
     setResending(true);
-    setResendMsg("");
     try {
       const res = await resendVerificationEmail();
-      setResendMsg(res?.message || "Verification email sent.");
+      toast.success(res?.message || "Verification email sent.");
     } catch (err) {
-      setResendMsg(
-        err?.response?.data?.message || "Failed to resend verification email.",
-      );
+      toast.error(err?.response?.data?.message || "Failed to resend verification email.");
     } finally {
       setResending(false);
     }
@@ -300,11 +292,6 @@ const Profile = () => {
                   {avatarError}
                 </p>
               )}
-              {avatarSuccess && (
-                <p role="status" className="mt-2 text-xs text-[#13795b]">
-                  {avatarSuccess}
-                </p>
-              )}
             </div>
           </div>
 
@@ -326,9 +313,6 @@ const Profile = () => {
             <p className="text-sm text-[#ab570a]">
               Your email address is not yet verified.
             </p>
-            {resendMsg && (
-              <p className="mt-1 text-xs text-[#4d4d4d]">{resendMsg}</p>
-            )}
             <button
               type="button"
               onClick={handleResendVerification}
@@ -350,12 +334,6 @@ const Profile = () => {
             <div className="mb-4 flex items-center gap-2 rounded-xl border border-[#fecaca] bg-[#fff5f5] px-3 py-2 text-xs text-[#c50000]">
               <FiAlertCircle className="h-3.5 w-3.5 shrink-0" />
               {pwError}
-            </div>
-          )}
-          {pwSuccess && (
-            <div className="mb-4 flex items-center gap-2 rounded-xl border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2 text-xs text-[#15803d]">
-              <FiCheck className="h-3.5 w-3.5 shrink-0" />
-              {pwSuccess}
             </div>
           )}
           <form

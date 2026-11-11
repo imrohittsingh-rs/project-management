@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { FiSettings, FiTrash2 } from 'react-icons/fi'
 import { deleteProject, updateProject } from '../../services/projectService'
 import { ActionBtn, Input, Textarea } from './shared'
+import toast from '../../utils/toast.js'
 
 const SettingsTab = ({ project, userRole, onProjectDeleted, onProjectUpdated }) => {
   const [name, setName] = useState(project?.name || '')
   const [description, setDescription] = useState(project?.description || '')
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   const isAdmin = userRole === 'admin'
 
@@ -17,14 +16,12 @@ const SettingsTab = ({ project, userRole, onProjectDeleted, onProjectUpdated }) 
     e.preventDefault()
     if (!name.trim()) return
     setSaving(true)
-    setError('')
-    setSuccess('')
     try {
       const res = await updateProject(project._id, { name: name.trim(), description: description.trim() })
-      setSuccess('Project updated successfully.')
       onProjectUpdated(res?.data)
+      toast.success('Project updated')
     } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to update project')
+      toast.error(err?.response?.data?.message || 'Failed to update project')
     } finally {
       setSaving(false)
     }
@@ -35,9 +32,10 @@ const SettingsTab = ({ project, userRole, onProjectDeleted, onProjectUpdated }) 
     setDeleting(true)
     try {
       await deleteProject(project._id)
+      toast.success('Project deleted')
       onProjectDeleted()
     } catch {
-      setError('Failed to delete project')
+      toast.error('Failed to delete project')
       setDeleting(false)
     }
   }
@@ -56,8 +54,6 @@ const SettingsTab = ({ project, userRole, onProjectDeleted, onProjectUpdated }) 
       {/* Edit project */}
       <div className="rounded-[6px] border border-[#ebebeb] bg-white p-5">
         <h3 className="mb-4 text-sm font-semibold text-[#171717]">Project Details</h3>
-        {error && <p className="mb-3 text-xs text-[#ee0000]">{error}</p>}
-        {success && <p className="mb-3 text-xs text-[#13795b]">{success}</p>}
         <form onSubmit={handleSave} className="space-y-3">
           <Input
             id="settings-name"

@@ -17,6 +17,7 @@ import {
 } from '../services/projectService'
 import { getTasks } from '../services/taskService'
 import LoadingSpinner from '../components/Loadingspinner'
+import toast from '../utils/toast.js'
 
 const roleLabel = (role) =>
   role?.replace('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase()) ||
@@ -155,6 +156,7 @@ const Team = () => {
       })
       setShowInvite(false)
       setRefreshKey((key) => key + 1)
+      toast.success('Invitation sent')
     } catch (err) {
       setInviteError(
         err?.response?.data?.message || 'Unable to invite this member.',

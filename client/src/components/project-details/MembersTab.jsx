@@ -9,6 +9,7 @@ import {
 import Loader from "../Loadingspinner";
 import { ActionBtn, Input } from "./shared";
 import { initials, ROLE_CONFIG } from "./sharedData";
+import toast from "../../utils/toast.js";
 
 const MembersTab = ({ projectId, userRole, currentUserId }) => {
   const [members, setMembers] = useState([]);
@@ -18,7 +19,6 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
   const [addEmail, setAddEmail] = useState("");
   const [addRole, setAddRole] = useState("member");
   const [adding, setAdding] = useState(false);
-  const [addError, setAddError] = useState("");
 
   const isAdmin = userRole === "admin";
   const canAddMembers = isAdmin || userRole === "project_admin";
@@ -57,7 +57,6 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
     e.preventDefault();
     if (!addEmail.trim()) return;
     setAdding(true);
-    setAddError("");
     try {
       await addMemberToProject(projectId, {
         email: addEmail.trim().toLowerCase(),
@@ -67,8 +66,9 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
       setAddRole("member");
       setShowAdd(false);
       await loadMembers();
+      toast.success("Invitation sent");
     } catch (err) {
-      setAddError(err?.response?.data?.message || "Failed to add member");
+      toast.error(err?.response?.data?.message || "Failed to invite member");
     } finally {
       setAdding(false);
     }
@@ -80,8 +80,9 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
       setMembers((prev) =>
         prev.map((m) => (m.user._id === userId ? { ...m, role: newRole } : m)),
       );
+      toast.success("Member role updated");
     } catch {
-      setError("Failed to update role");
+      toast.error("Failed to update member role");
     }
   };
 
@@ -90,8 +91,9 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
     try {
       await deleteMember(projectId, userId);
       setMembers((prev) => prev.filter((m) => m.user._id !== userId));
+      toast.success("Member removed");
     } catch {
-      setError("Failed to remove member");
+      toast.error("Failed to remove member");
     }
   };
 
@@ -119,7 +121,6 @@ const MembersTab = ({ projectId, userRole, currentUserId }) => {
               className="rounded-lg border border-[#ebebeb] bg-white p-4 space-y-3"
             >
               <p className="text-sm font-semibold text-[#171717]">Add Member</p>
-              {addError && <p className="text-xs text-[#ee0000]">{addError}</p>}
               <Input
                 id="add-member-email"
                 label="Email address"
