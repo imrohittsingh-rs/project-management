@@ -11,6 +11,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import fs from "node:fs/promises";
 import path from "node:path";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 
 const isProduction =
   process.env.NODE_ENV === "production" ||
@@ -50,19 +51,22 @@ const generateAccessAndRefreshToken = async (userId) => {
 */
 const handleUserRegister = asyncHandler(async (req, res) => {
   const { email, password, username, fullName } = req.body;
-  const avatar = req.file
-    ? {
-        url: `${serverUrl}/images/${req.file.filename}`,
-        localPath: req.file.path,
-      }
-    : undefined;
-
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
   if (existedUser) {
     throw new ApiError(409, "User with email or username already exists");
+  }
+
+  let avatar = null;
+  if (req.file) {
+    const uploadedAvatar = await uploadOnCloudinary(req.file.path);
+    avatar = {
+      url: uploadedAvatar.secure_url,
+      localPath: "",
+      publicId: uploadedAvatar.public_id,
+    };
   }
 
   const user = await User.create({
@@ -226,9 +230,11 @@ const updateAvatar = asyncHandler(async (req, res) => {
   }
 
   const previousLocalPath = user.avatar?.localPath;
+  const uploadedAvatar = await uploadOnCloudinary(req.file.path);
   user.avatar = {
-    url: `${serverUrl}/images/${req.file.filename}`,
-    localPath: req.file.path,
+    url: uploadedAvatar.secure_url,
+    localPath: "",
+    publicId: uploadedAvatar.public_id,
   };
   await user.save({ validateBeforeSave: false });
 

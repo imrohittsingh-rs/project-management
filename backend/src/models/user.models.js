@@ -9,10 +9,12 @@ const userSchema = new mongoose.Schema(
       type: {
         url: String,
         localPath: String,
+        publicId: String,
       },
       default: {
         url: "https://placehold.co/200x200",
         localPath: "",
+        publicId: "",
       },
     },
     username: {

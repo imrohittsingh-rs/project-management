@@ -46,7 +46,7 @@ Projectub Backend delivers the server-side infrastructure for project management
 | **ODM** | [Mongoose](https://mongoosejs.com/) | 9.7.1 | Data modeling, validations, and aggregation pipelines |
 | **Authentication** | [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) | 9.0.3 | Signed JWT access and refresh token generation |
 | **Password Hashing** | [bcrypt](https://github.com/kelektiv/node.bcrypt.js) | 6.0.0 | Salted password hashing in pre-save hooks |
-| **File Uploads** | [Multer](https://github.com/expressjs/multer) | 2.4.0 | Multipart form-data disk storage for avatars and task files |
+| **File Uploads** | [Multer](https://github.com/expressjs/multer) and [Cloudinary](https://cloudinary.com/) | 2.4.0 | Persistent Cloudinary storage for avatars and disk storage for task files |
 | **Email Delivery** | [Nodemailer](https://nodemailer.com/) & [Mailgen](https://github.com/eladnava/mailgen) | 9.0.1 / 2.0.34 | Transactional email delivery and responsive HTML email templates |
 | **Validation** | [express-validator](https://express-validator.github.io/) | 7.3.2 | Route-level request body and param sanitization and validation |
 | **Cookie Parsing** | [cookie-parser](https://github.com/expressjs/cookie-parser) | 1.4.7 | Cookie extraction for JWT token verification |
@@ -237,6 +237,9 @@ cp backend/.env.example backend/.env
 | `MAILTRAP_SMTP_USER` | Mailtrap inbox username | `replace-with-mailtrap-username` |
 | `MAILTRAP_SMTP_PASS` | Mailtrap inbox password | `replace-with-mailtrap-password` |
 | `MAIL_FROM` | Verified sender address for live email delivery | `Projectub <noreply@mail.imrohittsingh.dev>` |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name for persistent avatar storage | `replace-with-cloudinary-cloud-name` |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | `replace-with-cloudinary-api-key` |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret | `replace-with-cloudinary-api-secret` |
 
 ---
 
@@ -248,6 +251,7 @@ cp backend/.env.example backend/.env
 - [npm](https://www.npmjs.com/) (bundled with Node.js)
 - A running [MongoDB](https://www.mongodb.com/) instance or MongoDB Atlas cluster URI
 - A [Mailtrap](https://mailtrap.io/) account for capturing transactional emails during development
+- A [Cloudinary](https://cloudinary.com/) account for persistent avatar storage in deployed environments
 
 ### 1. Installation
 
