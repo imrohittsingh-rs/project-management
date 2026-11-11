@@ -42,7 +42,6 @@ export default function Login() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotTouched, setForgotTouched] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
-  const [forgotSuccessMessage, setForgotSuccessMessage] = useState("");
   const [forgotErrorMessage, setForgotErrorMessage] = useState("");
 
   const handleIdentifierChange = (e) => {
@@ -144,15 +143,12 @@ export default function Login() {
 
     setIsSendingReset(true);
     setForgotErrorMessage("");
-    setForgotSuccessMessage("");
 
     try {
       const response = await forgotPassword({
         email: forgotEmail.trim().toLowerCase(),
       });
-      const msg =
-        response?.message || "Password reset instructions sent to your email.";
-      setForgotSuccessMessage(msg);
+      const msg = response?.message || "Password reset instructions sent to your email.";
       toast.success(msg);
     } catch (err) {
       const msg =
@@ -177,12 +173,10 @@ export default function Login() {
         touched={forgotTouched}
         onEmailBlur={() => setForgotTouched(true)}
         isSending={isSendingReset}
-        successMessage={forgotSuccessMessage}
         errorMessage={forgotErrorMessage}
         onSubmit={handleForgotSubmit}
         onClose={() => {
           setShowForgotModal(false);
-          setForgotSuccessMessage("");
           setForgotErrorMessage("");
         }}
       />

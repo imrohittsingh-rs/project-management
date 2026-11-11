@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { FiAlertCircle, FiLoader } from "react-icons/fi";
-import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { IoKey } from "react-icons/io5";
 
@@ -12,7 +11,6 @@ const ForgotPassword = ({
   touched,
   onEmailBlur,
   isSending,
-  successMessage,
   errorMessage,
   onSubmit,
   onClose,
@@ -71,27 +69,7 @@ const ForgotPassword = ({
           </p>
         </div>
 
-        {successMessage ? (
-          <div className="space-y-4">
-            <div
-              role="status"
-              className="flex items-start gap-2.5 rounded-md border border-[#bbf7d0] bg-[#f0fdf4] py-2 px-3.5 text-sm text-[#15803d]"
-            >
-              <FaRegCircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#22c55e]" />
-              <div className="text-xs leading-snug sm:text-sm">
-                {successMessage}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex h-10 w-full cursor-pointer items-center justify-center rounded-md bg-[#171717] text-sm font-medium text-white transition-colors hover:bg-[#262626]"
-            >
-              Return to sign in
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={onSubmit} noValidate className="space-y-4">
+        <form onSubmit={onSubmit} noValidate className="space-y-4">
             {errorMessage && (
               <div
                 role="alert"
@@ -171,8 +149,7 @@ const ForgotPassword = ({
                 Log in
               </Link>
             </p>
-          </form>
-        )}
+        </form>
       </section>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { FiAlertCircle, FiCheckCircle, FiLoader, FiLock } from "react-icons/fi";
+import { FiAlertCircle, FiLoader, FiLock } from "react-icons/fi";
 import { FaCircleCheck } from "react-icons/fa6";
 import { useAuth } from "../context/AuthContext";
 import toast from "../utils/toast.js";
@@ -85,10 +85,6 @@ const ResetPassword = () => {
       <section className="w-full max-w-[440px] rounded-xl border border-[#ebebeb] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)] sm:p-8">
         {success ? (
           <div className="text-center">
-            <FiCheckCircle
-              className="mx-auto mb-4 h-8 w-8 text-[#0070f3]"
-              aria-hidden="true"
-            />
             <h1 className="text-2xl font-semibold tracking-[-0.6px] text-[#171717]">
               Password updated
             </h1>

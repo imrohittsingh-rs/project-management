@@ -1,6 +1,6 @@
 import hotToast from 'react-hot-toast'
 
-const MAX_TOASTS = 5
+const MAX_TOASTS = 3
 const activeToastIds = []
 let nextToastId = 0
 
