@@ -42,7 +42,12 @@ export default function Login() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotTouched, setForgotTouched] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
-  const [forgotErrorMessage, setForgotErrorMessage] = useState("");
+  const [forgotCooldownUntil, setForgotCooldownUntil] = useState(() => {
+    const storedExpiry = Number(localStorage.getItem("forgotPasswordCooldownUntil"));
+    return Number.isFinite(storedExpiry) && storedExpiry > Date.now()
+      ? storedExpiry
+      : 0;
+  });
 
   const handleIdentifierChange = (e) => {
     setIdentifier(e.target.value);
@@ -142,12 +147,15 @@ export default function Login() {
     }
 
     setIsSendingReset(true);
-    setForgotErrorMessage("");
 
     try {
       const response = await forgotPassword({
         email: forgotEmail.trim().toLowerCase(),
       });
+      setForgotEmail("");
+      const cooldownExpiry = Date.now() + 60_000;
+      localStorage.setItem("forgotPasswordCooldownUntil", String(cooldownExpiry));
+      setForgotCooldownUntil(cooldownExpiry);
       const msg = response?.message || "Password reset instructions sent to your email.";
       toast.success(msg);
     } catch (err) {
@@ -155,7 +163,7 @@ export default function Login() {
         err?.response?.data?.message ||
         err?.message ||
         "Failed to send reset link. Please verify the email address.";
-      setForgotErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSendingReset(false);
     }
@@ -168,16 +176,14 @@ export default function Login() {
         email={forgotEmail}
         onEmailChange={(event) => {
           setForgotEmail(event.target.value);
-          if (forgotErrorMessage) setForgotErrorMessage("");
         }}
         touched={forgotTouched}
         onEmailBlur={() => setForgotTouched(true)}
         isSending={isSendingReset}
-        errorMessage={forgotErrorMessage}
+        cooldownUntil={forgotCooldownUntil}
         onSubmit={handleForgotSubmit}
         onClose={() => {
           setShowForgotModal(false);
-          setForgotErrorMessage("");
         }}
       />
     );
@@ -249,7 +255,11 @@ export default function Login() {
               </label>
               <button
                 type="button"
-                onClick={() => setShowForgotModal(true)}
+                onClick={() => {
+                  setForgotEmail("");
+                  setForgotTouched(false);
+                  setShowForgotModal(true);
+                }}
                 className="text-xs text-[#0070f3] hover:text-[#0761d1] transition-colors cursor-pointer bg-transparent border-none p-0"
               >
                 Forgot password?
