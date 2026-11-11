@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { FiAlertCircle, FiCheckCircle, FiLoader } from "react-icons/fi";
+import { FiAlertCircle, FiLoader } from "react-icons/fi";
+import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { IoKey } from "react-icons/io5";
 
@@ -74,9 +75,9 @@ const ForgotPassword = ({
           <div className="space-y-4">
             <div
               role="status"
-              className="flex items-start gap-2.5 rounded-md border border-[#bbf7d0] bg-[#f0fdf4] p-3.5 text-sm text-[#15803d]"
+              className="flex items-start gap-2.5 rounded-md border border-[#bbf7d0] bg-[#f0fdf4] py-2 px-3.5 text-sm text-[#15803d]"
             >
-              <FiCheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#22c55e]" />
+              <FaRegCircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#22c55e]" />
               <div className="text-xs leading-snug sm:text-sm">
                 {successMessage}
               </div>
