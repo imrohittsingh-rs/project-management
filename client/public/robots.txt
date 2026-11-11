@@ -1,0 +1,8 @@
+# Projectub robots.txt
+# https://projectub.vercel.app/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://projectub.vercel.app/sitemap.xml
