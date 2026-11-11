@@ -17,14 +17,13 @@ import { useAuth } from "../context/AuthContext";
 import image1 from "../assets/image1.png";
 import image2 from "../assets/image2.png";
 import image3 from "../assets/image3.png";
-import inviteTeamMember from "../assets/invite-team-member.png";
-
 import FeatureCard from "../components/FeatureCard";
 
 const CoreFeatures = [
   {
     title: "Project Workspaces",
-    description: "Keep project goals, tasks, people, and progress together in one workspace.",
+    description:
+      "Keep project goals, tasks, people, and progress together in one workspace.",
     icon: "FaFolderOpen",
   },
   {
@@ -35,8 +34,7 @@ const CoreFeatures = [
   },
   {
     title: "Team Collaboration",
-    description:
-      "Invite teammates and assign the right role for each project.",
+    description: "Invite teammates and assign the right role for each project.",
     icon: "FaUsers",
   },
   {
@@ -191,7 +189,9 @@ const Features = () => {
                         aria-label={`${task.status.replace("_", " ")} status`}
                         title={task.status.replace("_", " ")}
                       />
-                      <span className="truncate text-sm font-medium">{task.title}</span>
+                      <span className="truncate text-sm font-medium">
+                        {task.title}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 text-sm text-gray-400">
                       <BsArrowReturnRight
@@ -239,17 +239,43 @@ const Features = () => {
         {/* Card 3*/}
         <FeatureCard {...CoreFeatures[2]}>
           <Motion.div
-            className="flex h-full w-full items-center justify-center overflow-hidden rounded-xl bg-white"
+            className="flex h-50 w-full items-center justify-center overflow-hidden rounded-xl bg-white"
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ delay: 0.15, duration: 0.45, ease: "easeOut" }}
           >
-            <img
-              src={inviteTeamMember}
-              alt="Invite a team member form"
-              className="h-full w-full object-contain"
-            />
+            <div className="w-full max-w-md bg-white border border-[#ebebeb] rounded-xl shadow-sm flex flex-col">
+              <div className="flex items-center justify-between px-3 pt-1 border-b border-[#ebebeb]">
+                <h4 className="text-sm font-semibold text-[#171717]">
+                  Invite a team member
+                </h4>
+              </div>
+              <div className="px-3 pb-3 pt-3 space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-[#171717] mb-2">
+                    Project
+                  </label>
+                  <div className="relative w-full px-3 py-1 border border-[#ebebeb] rounded-lg bg-[#ffffff] text-[#171717] text-sm">
+                    Updated Website Redesign
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#171717] text-xs">
+                      ⌄
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#171717] mb-2">
+                    Email address
+                  </label>
+                  <div className="w-full px-3 py-1 border border-[#ebebeb] rounded-lg bg-[#ffffff] text-[#a1a1a1] text-sm">
+                    teammate@example.com
+                  </div>
+                </div>
+              </div>
+              <div className="mx-3 mb-3 bg-[#171717] text-white px-6 py-1 rounded-lg text-sm font-semibold text-center">
+                Send Invite
+              </div>
+            </div>
           </Motion.div>
         </FeatureCard>
 
