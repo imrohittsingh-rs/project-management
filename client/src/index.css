@@ -66,6 +66,16 @@ body {
   font-style: italic;
 }
 
+/* Footer giant watermark text effect with cross-browser clipping */
+.footer-watermark-text {
+  font-size: clamp(3.5rem, 15vw, 13.5rem);
+  background: linear-gradient(180deg, #a8a8a8 0%, #cecece 45%, rgba(250, 250, 250, 0) 95%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 @keyframes cursor-blink {
   0%, 49% {
     opacity: 1;
